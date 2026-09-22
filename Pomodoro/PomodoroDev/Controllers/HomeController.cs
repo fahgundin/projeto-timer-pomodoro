@@ -8,7 +8,7 @@ public class HomeController : Controller
 {
     public IActionResult Index()
     {
-        ViewData["Teste"] = "teste";
+        ViewData["Teste"] = "teste123";
         return View();
     }
 
