@@ -1,7 +1,11 @@
+using WebApplication1.Core;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.InjetarDependencias();
 
 var app = builder.Build();
 
