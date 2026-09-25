@@ -76,7 +76,7 @@ public class CicloBusiness : ICicloBusiness
     {
         FinalizarCiclo(cicloASerFocado);
         
-        IniciarCiclo(cicloASerFocado.TarefaId, TiposDeCiclo.PausaLonga, cicloASerFocado);
+        IniciarCiclo(cicloASerFocado.TarefaId, TiposDeCiclo.Focus, cicloASerFocado);
     }
 
     public CicloViewModel ObterCicloAtual()
