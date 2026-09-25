@@ -13,7 +13,7 @@ public class CicloViewModel
     
     public DateTimeOffset DataHoraInicio { get; set; }
     
-    public DateTimeOffset DataHoraFim { get; set; }
-    
-    public bool Concluido { get; set; }
+    public DateTimeOffset? DataHoraFim { get; set; }
+
+    public bool Concluido { get; set; } = false;
 }

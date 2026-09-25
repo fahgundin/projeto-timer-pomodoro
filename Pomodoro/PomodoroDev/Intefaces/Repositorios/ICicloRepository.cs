@@ -6,11 +6,11 @@ public interface ICicloRepository
 {
     public List<CicloViewModel> ObterCiclosConcluidosDeUmaTarefa(TarefaViewModel tarefa);
     
-    public CicloViewModel ObterCicloAtual(TarefaViewModel tarefa);
+    public CicloViewModel ObterCicloAtual(TarefaViewModel tarefaAtual);
     
     public void DefinirCicloComoConcluido(CicloViewModel ciclo);
     
-    public void CriarCiclo(TarefaViewModel tarefa, CicloViewModel ciclo);
-    
-    
+    public void CriarCiclo(CicloViewModel ciclo);
+
+
 }

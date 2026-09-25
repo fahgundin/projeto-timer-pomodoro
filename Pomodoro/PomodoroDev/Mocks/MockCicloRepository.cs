@@ -1,4 +1,5 @@
-﻿using WebApplication1.Intefaces.Repositorios;
+﻿using WebApplication1.Intefaces.Core;
+using WebApplication1.Intefaces.Repositorios;
 using WebApplication1.ViewModels;
 using WebApplication1.ViewModels.Enums;
 
@@ -6,33 +7,67 @@ namespace WebApplication1.Mocks;
 
 public class MockCicloRepository : ICicloRepository 
 {
+    private static List<CicloViewModel>? _ciclos;
+    
     public List<CicloViewModel> ObterCiclosConcluidosDeUmaTarefa(TarefaViewModel tarefa)
     {
-        throw new NotImplementedException();
+        if (_ciclos == null)
+            return new List<CicloViewModel>();
+        var ciclos = _ciclos
+            .Where(c => c.TarefaId == tarefa)
+            .Where(c => c.Concluido = true)
+            .ToList();
+
+        return ciclos;
     }
 
-    public CicloViewModel ObterCicloAtual(TarefaViewModel tarefa)
+    public CicloViewModel ObterCicloAtual(TarefaViewModel tarefaAtual)
     {
-        CicloViewModel novoCicloMockado = new CicloViewModel
+        if (_ciclos == null)
         {
-            CicloId = 1,
-            TarefaId = tarefa,
-            DataHoraInicio =  DateTime.Now,
-            TipoDoCiclo = TiposDeCiclo.Focus
-            
-            
-        };
+            return CriarCicloCasoNenhumExista(tarefaAtual);
+        }
 
-        return novoCicloMockado;
+        CicloViewModel cicloAtual = _ciclos!
+            .Where(c => c.TarefaId == tarefaAtual)
+            .OrderByDescending(c => c.DataHoraInicio)
+            .FirstOrDefault(c => c.DataHoraFim == null) ?? CriarCicloCasoNenhumExista(tarefaAtual);
+        
+        return cicloAtual;
+    }
+
+    private CicloViewModel CriarCicloCasoNenhumExista(TarefaViewModel tarefaAtual)
+    {
+        var novoCiclo = new CicloViewModel
+        {
+            CicloId = 0,
+            TarefaId = tarefaAtual,
+            DataHoraInicio = DateTimeOffset.Now,
+            Concluido = false,
+            TipoDoCiclo = TiposDeCiclo.Focus,
+        };
+        CriarCiclo(novoCiclo);
+        return novoCiclo;
     }
 
     public void DefinirCicloComoConcluido(CicloViewModel ciclo)
     {
-        ciclo.Concluido = true;
+        if (_ciclos == null)
+            return;
+        var cicloDaLista = _ciclos
+            .FirstOrDefault((c) => c.CicloId == ciclo.CicloId);
+
+        if (cicloDaLista == null)
+            throw new InvalidOperationException("Ciclo Informado não existe");
+        
+        cicloDaLista.Concluido = true;
     }
 
-    public void CriarCiclo(TarefaViewModel tarefa, CicloViewModel ciclo)
+    public void CriarCiclo(CicloViewModel ciclo)
     {
-        ciclo.DataHoraInicio = new DateTimeOffset(DateTime.Now);
+        if (_ciclos == null)
+            _ciclos = new List<CicloViewModel>();
+        _ciclos.Add(ciclo);
     }
+    
 }

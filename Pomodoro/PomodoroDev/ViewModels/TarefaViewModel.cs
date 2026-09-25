@@ -16,7 +16,7 @@ public class TarefaViewModel
     
     public DateTimeOffset DataHoraInicio { get; set; }
     
-    public DateTimeOffset DataHoraFim { get; set; }
+    public DateTimeOffset? DataHoraFim { get; set; }
     
     public bool Arquivado { get; set; }
     

@@ -11,4 +11,7 @@ public interface ITarefaRepository
     public void ExcluirTarefa(TarefaViewModel tarefa);
     
     public void CriarTarefa(TarefaViewModel tarefa);
+
+    public TarefaViewModel ObterTarefaAtual();
+    
 }
