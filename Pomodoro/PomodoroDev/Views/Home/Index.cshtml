@@ -1,10 +1,158 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
-    var teste = ViewData["Teste"];
+    ViewData["Title"] = "Pomodoro";
+    Layout = null;
 }
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pomodoro</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/css/pomodoro.css" />
+</head>
+<body class="corpo-pomodoro">
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    <h1>@teste</h1>
-</div>
+    <div class="d-flex vh-100 overflow-hidden">
+
+        <aside class="barra-lateral d-flex flex-column align-items-center py-3 gap-3">
+            <button class="botao-icone" title="Histórico">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+            </button>
+            <button class="botao-icone" title="Tarefas">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="8" y1="6" x2="21" y2="6"></line>
+                    <line x1="8" y1="12" x2="21" y2="12"></line>
+                    <line x1="8" y1="18" x2="21" y2="18"></line>
+                    <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                    <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                    <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                </svg>
+            </button>
+            <button class="botao-icone" title="Relatórios">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+            </button>
+            <button class="botao-icone" title="Configurações">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+            </button>
+        </aside>
+
+        <div class="area-conteudo">
+
+            <div class="barra-superior d-flex align-items-center px-3 py-2 gap-2">
+                <button class="botao-voltar-topo d-flex align-items-center gap-1" id="botaoVoltarTopo" title="Voltar para as tarefas">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                    <span>Tarefas</span>
+                </button>
+            </div>
+
+            <main class="conteudo-principal flex-fill d-flex flex-column" id="telaListaTarefas">
+
+                <header class="cabecalho-conteudo d-flex align-items-center px-4 py-3 gap-3">
+                    <h1 class="h6 fw-bold mb-0">Pomodoro</h1>
+                    <div class="flex-fill d-flex justify-content-center">
+                        <button class="aba aba-ativa">Ativo</button>
+                    </div>
+                    <div class="d-flex gap-1">
+                        <button class="botao-icone" title="Adicionar tarefa">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                        </button>
+                        <button class="botao-icone" title="Mais opções">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="5" r="1"></circle>
+                                <circle cx="12" cy="12" r="1"></circle>
+                                <circle cx="12" cy="19" r="1"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </header>
+
+                <ul class="lista-tarefas flex-fill overflow-auto m-0 p-0 list-unstyled" id="listaTarefas">
+                    <li class="item-tarefa d-flex align-items-center gap-2 px-4 py-3" data-nome-tarefa="Estudar">
+                        <span class="marcador-tarefa" style="background:#7ed957"></span>
+                        <span class="nome-tarefa flex-fill">Estudar</span>
+                        <span class="tempo-tarefa">0m</span>
+                    </li>
+                    <li class="item-tarefa d-flex align-items-center gap-2 px-4 py-3" data-nome-tarefa="Estudar C#">
+                        <span class="marcador-tarefa" style="background:#c96bff"></span>
+                        <span class="nome-tarefa flex-fill">Estudar C#</span>
+                        <span class="tempo-tarefa">0m</span>
+                    </li>
+                    <li class="item-tarefa d-flex align-items-center gap-2 px-4 py-3" data-nome-tarefa="Ler">
+                        <span class="marcador-tarefa" style="background:#7ed957"></span>
+                        <span class="nome-tarefa flex-fill">Ler</span>
+                        <span class="tempo-tarefa">0m</span>
+                    </li>
+                </ul>
+
+                <div class="barra-foco d-flex align-items-center justify-content-between px-4 py-3" id="barraFoco">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="icone-foco"></span>
+                        <div class="d-flex flex-column lh-sm">
+                            <span class="rotulo-foco">Foco</span>
+                            <span class="tempo-foco" id="tempoFoco">90:00</span>
+                        </div>
+                    </div>
+                    <button class="botao-iniciar" id="botaoIniciar" title="Iniciar Pomodoro">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="6 3 20 12 6 21 6 3"></polygon>
+                        </svg>
+                    </button>
+                </div>
+
+            </main>
+
+            <div class="tela-cronometro" id="telaCronometro">
+                <button class="botao-voltar-cronometro d-flex align-items-center gap-1" id="botaoVoltarCronometro" title="Voltar para as tarefas">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                    <span>Tarefas</span>
+                </button>
+
+                <div class="caixa-cronometro d-flex flex-column align-items-center py-5 px-3">
+                    <span class="nome-tarefa-cronometro fw-semibold" id="nomeTarefaCronometro">Estudar</span>
+
+                    <div class="circulo-cronometro position-relative mt-4">
+                        <svg class="svg-circulo" viewBox="0 0 220 220">
+                            <circle class="circulo-fundo" cx="110" cy="110" r="100"></circle>
+                            <circle class="circulo-progresso" id="circuloProgresso" cx="110" cy="110" r="100"></circle>
+                        </svg>
+                        <div class="conteudo-circulo position-absolute top-0 start-0 end-0 bottom-0 d-flex flex-column align-items-center justify-content-center gap-1">
+                            <span class="tempo-cronometro" id="tempoCronometro">90:00</span>
+                            <span class="estado-cronometro" id="estadoCronometro">Pausado</span>
+                        </div>
+                    </div>
+
+                    <div class="acoes-cronometro mt-4 d-flex flex-column align-items-center gap-3">
+                        <button class="botao-continuar" id="botaoContinuar">Continuar</button>
+                        <div class="d-flex gap-2">
+                            <button class="botao-fim" id="botaoFim">Fim</button>
+                            <button class="botao-cancelar" id="botaoCancelar">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="~/js/pomodoro.js"></script>
+</body>
+</html>

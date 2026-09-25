@@ -1,0 +1,316 @@
+.corpo-pomodoro {
+  margin: 0;
+  background: #1a1a1a;
+  color: #e5e5e5;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+.barra-lateral {
+  width: 48px;
+  flex-shrink: 0;
+  background: #141414;
+  border-right: 1px solid #262626;
+}
+
+.botao-icone {
+  background: transparent;
+  border: none;
+  color: #6b6b6b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.botao-icone:hover {
+  background: #2a2a2a;
+  color: #ffffff;
+}
+
+.area-conteudo {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.barra-superior {
+  flex-shrink: 0;
+  border-bottom: 1px solid #262626;
+  background: #1a1a1a;
+}
+
+.botao-voltar-topo {
+  background: transparent;
+  border: none;
+  color: #8a8a8a;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.botao-voltar-topo:hover {
+  background: #2a2a2a;
+  color: #ffffff;
+}
+
+.conteudo-principal {
+  min-width: 0;
+  min-height: 0;
+  background: #1e1e1e;
+}
+
+.cabecalho-conteudo {
+  border-bottom: 1px solid #2a2a2a;
+  flex-shrink: 0;
+}
+
+.aba {
+  background: none;
+  border: none;
+  color: #7a7a7a;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 2px;
+  transition: color 0.15s ease;
+}
+
+.aba:hover {
+  color: #ffffff;
+}
+
+.aba-ativa {
+  color: #ffffff;
+}
+
+.item-tarefa {
+  cursor: pointer;
+  border-bottom: 1px solid #262626;
+  transition: background 0.15s ease;
+}
+
+.item-tarefa:hover {
+  background: #262626;
+}
+
+.item-tarefa.tarefa-selecionada {
+  background: #2a2a2a;
+}
+
+.marcador-tarefa {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.nome-tarefa {
+  color: #6bc96b;
+  font-size: 13px;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.item-tarefa:hover .nome-tarefa {
+  color: #8fe08f;
+}
+
+.tempo-tarefa {
+  color: #c98b4b;
+  font-size: 12px;
+}
+
+.barra-foco {
+  display: none;
+  border-top: 1px solid #2a2a2a;
+  background: #1a1a1a;
+  flex-shrink: 0;
+}
+
+.barra-foco.barra-foco-visivel {
+  display: flex;
+}
+
+.icone-foco {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #7a9bff, #3d5cff);
+  flex-shrink: 0;
+}
+
+.rotulo-foco {
+  font-size: 10px;
+  color: #8a8a8a;
+}
+
+.tempo-foco {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.botao-iniciar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #4d5bf2;
+  border: none;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.botao-iniciar:hover {
+  background: #6270ff;
+  transform: scale(1.05);
+}
+
+.botao-iniciar svg {
+  margin-left: 2px;
+}
+
+.tela-cronometro {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  flex-direction: column;
+  align-items: center;
+  background: #1e1e1e;
+  z-index: 20;
+  overflow-y: auto;
+}
+
+.tela-cronometro.tela-cronometro-visivel {
+  display: flex;
+}
+
+.botao-voltar-cronometro {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: transparent;
+  border: none;
+  color: #8a8a8a;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.botao-voltar-cronometro:hover {
+  background: #2a2a2a;
+  color: #ffffff;
+}
+
+.caixa-cronometro {
+  margin: auto;
+}
+
+.nome-tarefa-cronometro {
+  color: #ffffff;
+  font-size: 15px;
+}
+
+.circulo-cronometro {
+  width: 220px;
+  height: 220px;
+}
+
+.svg-circulo {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.circulo-fundo {
+  fill: none;
+  stroke: #2a2a2a;
+  stroke-width: 4;
+}
+
+.circulo-progresso {
+  fill: none;
+  stroke: #4d5bf2;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 628;
+  stroke-dashoffset: 628;
+  transition: stroke-dashoffset 1s linear;
+}
+
+.tempo-cronometro {
+  font-size: 40px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.estado-cronometro {
+  font-size: 13px;
+  color: #8a8a8a;
+}
+
+.botao-continuar {
+  width: 220px;
+  padding: 10px 0;
+  border-radius: 20px;
+  border: none;
+  background: #4d5bf2;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.botao-continuar:hover {
+  background: #6270ff;
+}
+
+.botao-fim,
+.botao-cancelar {
+  width: 104px;
+  padding: 8px 0;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.botao-fim {
+  background: transparent;
+  border: 1px solid #4d5bf2;
+  color: #6b7dff;
+}
+
+.botao-fim:hover {
+  background: rgba(77, 91, 242, 0.15);
+}
+
+.botao-cancelar {
+  background: transparent;
+  border: 1px solid #3a3a3a;
+  color: #8a8a8a;
+}
+
+.botao-cancelar:hover {
+  background: #2a2a2a;
+  color: #e5e5e5;
+}
