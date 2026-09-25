@@ -16,9 +16,8 @@ public class CicloBusiness : ICicloBusiness
         _tarefaRepository = tarefaRepository;
     }
     
-    public void IniciarCiclo(TarefaViewModel tarefa, TiposDeCiclo tipoDoCiclo)
+    public void IniciarCiclo(TarefaViewModel tarefa, TiposDeCiclo tipoDoCiclo, CicloViewModel cicloAtual)
     {
-        var cicloAtual = _cicloRepository.ObterCicloAtual(tarefa);
         var novoCiclo = new CicloViewModel
         {
             CicloId = cicloAtual.CicloId + 1,
@@ -40,7 +39,7 @@ public class CicloBusiness : ICicloBusiness
 
         if (ultimoFocoConcluido == null)
         {
-            IniciarCiclo(cicloASerPausado.TarefaId, TiposDeCiclo.PausaCurta);
+            IniciarCiclo(cicloASerPausado.TarefaId, TiposDeCiclo.PausaCurta, cicloASerPausado);
             return;
         }
         
@@ -49,7 +48,8 @@ public class CicloBusiness : ICicloBusiness
         IniciarCiclo(
             cicloASerPausado.TarefaId,
             pausasConcluidasDesdeOUltimoFoco.Count() > cicloASerPausado.TarefaId.CiclosParaPausaLonga ?
-                TiposDeCiclo.PausaLonga : TiposDeCiclo.PausaCurta
+                TiposDeCiclo.PausaLonga : TiposDeCiclo.PausaCurta,
+            cicloASerPausado
         );
         
     }
@@ -76,7 +76,7 @@ public class CicloBusiness : ICicloBusiness
     {
         FinalizarCiclo(cicloASerFocado);
         
-        IniciarCiclo(cicloASerFocado.TarefaId, TiposDeCiclo.PausaLonga);
+        IniciarCiclo(cicloASerFocado.TarefaId, TiposDeCiclo.PausaLonga, cicloASerFocado);
     }
 
     public CicloViewModel ObterCicloAtual()

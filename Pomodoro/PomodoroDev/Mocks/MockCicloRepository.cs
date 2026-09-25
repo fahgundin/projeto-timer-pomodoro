@@ -28,16 +28,21 @@ public class MockCicloRepository : ICicloRepository
             return CriarCicloCasoNenhumExista(tarefaAtual);
         }
 
-        CicloViewModel cicloAtual = _ciclos!
-            .Where(c => c.TarefaId == tarefaAtual)
+        CicloViewModel? cicloAtual = _ciclos
+            .Where(c => c.TarefaId.TarefaId == tarefaAtual.TarefaId && c.DataHoraFim == null)
             .OrderByDescending(c => c.DataHoraInicio)
-            .FirstOrDefault(c => c.DataHoraFim == null) ?? CriarCicloCasoNenhumExista(tarefaAtual);
+            .FirstOrDefault();
+        
+        if (cicloAtual == null)
+            cicloAtual = CriarCicloCasoNenhumExista(tarefaAtual);
         
         return cicloAtual;
     }
 
     private CicloViewModel CriarCicloCasoNenhumExista(TarefaViewModel tarefaAtual)
     {
+        _ciclos ??= new List<CicloViewModel>();
+        
         var novoCiclo = new CicloViewModel
         {
             CicloId = 0,
