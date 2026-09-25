@@ -5,7 +5,7 @@ namespace WebApplication1.Intefaces.Core;
 
 public interface ICicloBusiness
 {
-    public void IniciarCiclo(TarefaViewModel tarefa, TiposDeCiclo tipoDoCiclo);
+    public void IniciarCiclo(TarefaViewModel tarefa, TiposDeCiclo tipoDoCiclo, CicloViewModel cicloAtual);
     
     public void Pausar(CicloViewModel cicloASerPausado);
 
