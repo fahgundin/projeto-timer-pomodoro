@@ -249,8 +249,8 @@
   stroke: #4d5bf2;
   stroke-width: 4;
   stroke-linecap: round;
-  stroke-dasharray: 628;
-  stroke-dashoffset: 628;
+  stroke-dasharray: 628.32;
+  stroke-dashoffset: 628.32;
   transition: stroke-dashoffset 1s linear;
 }
 

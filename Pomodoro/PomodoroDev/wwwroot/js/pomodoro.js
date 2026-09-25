@@ -15,14 +15,40 @@
     var botaoCancelar = document.getElementById("botaoCancelar");
     var botaoVoltarCronometro = document.getElementById("botaoVoltarCronometro");
 
-    var segundosTotaisFoco = 90 * 60;
-    var perimetroCirculo = 628;
+    var segundosFoco = 10;
+    var segundosPausaMinima = 5;
+    var segundosPausaLonga = 10;
+    var perimetroCirculo = 628.32;
+
+    var etapas = ["foco", "pausaMinima", "foco", "pausaLonga"];
+    var indiceEtapaAtual = 0;
 
     var tarefaSelecionada = null;
-    var segundosRestantes = segundosTotaisFoco;
+    var segundosTotaisEtapaAtual = segundosFoco;
+    var segundosRestantes = segundosFoco;
     var intervaloContagem = null;
     var contagemEmAndamento = false;
     var cronometroJaIniciado = false;
+
+    function duracaoDaEtapa(etapa) {
+        if (etapa === "foco") {
+            return segundosFoco;
+        }
+        if (etapa === "pausaMinima") {
+            return segundosPausaMinima;
+        }
+        return segundosPausaLonga;
+    }
+
+    function textoDaEtapa(etapa) {
+        if (etapa === "foco") {
+            return "Em foco";
+        }
+        if (etapa === "pausaMinima") {
+            return "Pausa curta";
+        }
+        return "Pausa longa";
+    }
 
     function formatarTempo(segundos) {
         var minutos = Math.floor(segundos / 60).toString().padStart(2, "0");
@@ -40,8 +66,16 @@
         var tempoFormatado = formatarTempo(segundosRestantes);
         elementoTempoFoco.textContent = tempoFormatado;
         tempoCronometro.textContent = tempoFormatado;
-        var fracaoRestante = segundosRestantes / segundosTotaisFoco;
+        var fracaoRestante = segundosRestantes / segundosTotaisEtapaAtual;
         circuloProgresso.style.strokeDashoffset = (perimetroCirculo * fracaoRestante).toString();
+    }
+
+    function prepararEtapa(indice) {
+        indiceEtapaAtual = indice % etapas.length;
+        var etapa = etapas[indiceEtapaAtual];
+        segundosTotaisEtapaAtual = duracaoDaEtapa(etapa);
+        segundosRestantes = segundosTotaisEtapaAtual;
+        atualizarExibicaoTempo();
     }
 
     function selecionarTarefa(item) {
@@ -50,8 +84,7 @@
         item.classList.add("tarefa-selecionada");
 
         if (!cronometroJaIniciado) {
-            segundosRestantes = segundosTotaisFoco;
-            atualizarExibicaoTempo();
+            prepararEtapa(0);
         }
     }
 
@@ -79,7 +112,7 @@
 
         contagemEmAndamento = true;
         cronometroJaIniciado = true;
-        estadoCronometro.textContent = "Em foco";
+        estadoCronometro.textContent = textoDaEtapa(etapas[indiceEtapaAtual]);
         botaoContinuar.textContent = "Pausar";
 
         intervaloContagem = setInterval(function () {
@@ -87,9 +120,7 @@
             atualizarExibicaoTempo();
 
             if (segundosRestantes <= 0) {
-                pararContagem();
-                estadoCronometro.textContent = "Concluído";
-                botaoContinuar.textContent = "Continuar";
+                avancarAoFimDaEtapa();
             }
         }, 1000);
     }
@@ -98,6 +129,21 @@
         pararContagem();
         estadoCronometro.textContent = "Pausado";
         botaoContinuar.textContent = "Continuar";
+    }
+
+    function avancarAoFimDaEtapa() {
+        pararContagem();
+        var etapaQueTerminou = etapas[indiceEtapaAtual];
+        prepararEtapa(indiceEtapaAtual + 1);
+        var proximaEtapa = etapas[indiceEtapaAtual];
+
+        estadoCronometro.textContent = textoDaEtapa(proximaEtapa);
+
+        if (etapaQueTerminou === "foco") {
+            iniciarContagem();
+        } else {
+            botaoContinuar.textContent = "Continuar";
+        }
     }
 
     function abrirTelaCronometro() {
@@ -116,10 +162,9 @@
     function encerrarCronometroEVoltar() {
         pararContagem();
         cronometroJaIniciado = false;
-        segundosRestantes = segundosTotaisFoco;
+        prepararEtapa(0);
         estadoCronometro.textContent = "Pausado";
         botaoContinuar.textContent = "Continuar";
-        atualizarExibicaoTempo();
 
         telaCronometro.classList.remove("tela-cronometro-visivel");
         telaListaTarefas.style.display = "flex";
