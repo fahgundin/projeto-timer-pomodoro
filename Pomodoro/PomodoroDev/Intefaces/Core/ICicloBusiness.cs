@@ -1,12 +1,19 @@
-﻿namespace WebApplication1.Intefaces.Core;
+﻿using WebApplication1.ViewModels;
+using WebApplication1.ViewModels.Enums;
+
+namespace WebApplication1.Intefaces.Core;
 
 public interface ICicloBusiness
 {
-    public void IniciarCiclo();
+    public void IniciarCiclo(TarefaViewModel tarefa, TiposDeCiclo tipoDoCiclo);
     
-    public void Pausar();
+    public void Pausar(CicloViewModel cicloASerPausado);
 
-    public void Focar();
+    public void Focar(CicloViewModel cicloASerFocado);
     
-    public void FinalizarCiclo();
+    public void FinalizarCiclo(CicloViewModel ciclo);
+
+    public CicloViewModel ObterCicloAtual();
+    
+    public CicloViewModel MudarDeCiclo();
 }
