@@ -1,14 +1,12 @@
 ﻿@{
     ViewData["Title"] = "Timer";
 }
-
 <div id="paginaTimer" ng-app="appTimer" ng-controller="ControladorTimer">
-
     <div class="cabecalhoTarefas d-flex align-items-center px-3 py-2">
         <span class="tituloApp me-4">Pomodoro</span>
         <span class="abaFiltroTarefa">Ativo</span>
     </div>
-
+    
     <ul class="listaDeTarefas list-unstyled mb-0" ng-show="telaAtual === 'lista'">
         <li class="itemTarefa d-flex justify-content-between align-items-center px-3"
             ng-repeat="tarefa in listaDeTarefas"
@@ -18,28 +16,20 @@
                 <span class="marcadorCorTarefa"></span>
                 <span class="nomeDaTarefa">{{ tarefa.nomeDaTarefa }}</span>
             </span>
-            <span class="duracaoFocoTarefa">{{ formatarSegundosEmMinutos(tarefa.duracaoFocoSegundos) }}</span>
+            <span class="totalFocadoHojeTarefa">{{ tarefa.segundosFocadosHoje }}s hoje</span>
         </li>
     </ul>
-
     @await Html.PartialAsync("_Cronometro")
-
-    <div class="rodapeIniciar d-flex align-items-center justify-content-between px-3 py-2" ng-show="telaAtual === 'lista'">
+    <div class="rodapeIniciar d-flex align-items-center justify-content-between px-3 py-2" ng-show="telaAtual === 'lista' && tarefaSelecionada">
         <div class="d-flex align-items-center">
-            <div class="iconeRodape d-flex align-items-center justify-content-center">
-                <i class="bi bi-clock"></i>
-            </div>
+            <div class="iconeRodape d-flex align-items-center justify-content-center"><i class="bi bi-clock"></i></div>
             <div class="ms-2">
                 <div class="rotuloFoco">Foco</div>
-                <div class="tempoFocoRodape">{{ formatarSegundosEmMinutos(tarefaSelecionada.duracaoFocoSegundos || 0) }}</div>
+                <div class="tempoFocoRodape">{{ tarefaSelecionada.duracaoFocoSegundos || 0 }}s</div>
             </div>
         </div>
-
-        <button class="botaoIniciarCiclo" ng-click="iniciarCiclo()">
-            <i class="bi bi-play-fill"></i>
-        </button>
+        <button class="botaoIniciarCiclo" ng-click="iniciarCiclo()"><i class="bi bi-play-fill"></i></button>
     </div>
-
 </div>
 
 @section Scripts {
