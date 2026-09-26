@@ -55,3 +55,10 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# Bibliotecas client-side (usar CDN em vez de versionar)
+wwwroot/lib/bootstrap-icons/
+
+# Configuração de IDE
+.idea/
+*.user
