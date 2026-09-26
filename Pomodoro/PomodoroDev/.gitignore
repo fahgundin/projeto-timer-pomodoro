@@ -1,0 +1,13 @@
+# Bibliotecas client-side (usar CDN em vez de versionar)
+wwwroot/lib/bootstrap-icons/
+
+# Configuração de IDE
+.idea/
+*.user
+
+# Build do .NET
+bin/
+obj/
+
+# Pasta duplicada indevida
+Pomodoro/
