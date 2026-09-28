@@ -40,23 +40,20 @@ public class CicloBusiness : ICicloBusiness
             .OrderByDescending(c => c.DataHoraInicio)
             .FirstOrDefault();
 
-        var focosDesdeAUltimaPausaLonga = ciclosDaTarefa
-            .Count(c => c.TipoDoCiclo == TiposDeCiclo.Focus &&
-                        (ultimaPausaLonga == null || c.DataHoraInicio > ultimaPausaLonga.DataHoraInicio));
+        var focosConcluidos = ConsultarFocosConcluidosDesdeAUltimaPausaLonga(ciclosDaTarefa, ultimaPausaLonga);
 
-        var tipoDaPausa = focosDesdeAUltimaPausaLonga >= cicloASerPausado.TarefaId.CiclosParaPausaLonga
+        var tipoDaPausa = focosConcluidos.Count() >= cicloASerPausado.TarefaId.CiclosParaPausaLonga
             ? TiposDeCiclo.PausaLonga
             : TiposDeCiclo.PausaCurta;
 
         IniciarCiclo(cicloASerPausado.TarefaId, tipoDaPausa, cicloASerPausado);
     }
-
-    private static IEnumerable<CicloViewModel> ConsultarPausasConcluidasDesdeOUltimoFoco(List<CicloViewModel> ciclosDaTarefa, CicloViewModel ultimoFocoConcluido)
+    
+    private static IEnumerable<CicloViewModel> ConsultarFocosConcluidosDesdeAUltimaPausaLonga(List<CicloViewModel> ciclosDaTarefa, CicloViewModel? ultimaPausaLonga)
     {
         return ciclosDaTarefa
-            .Where(
-                c => (c.TipoDoCiclo == TiposDeCiclo.PausaCurta) &&
-                     c.DataHoraInicio > ultimoFocoConcluido.DataHoraInicio);
+            .Where(c => c.TipoDoCiclo == TiposDeCiclo.Focus && c.Concluido == true && 
+                        (ultimaPausaLonga == null || c.DataHoraInicio > ultimaPausaLonga.DataHoraInicio));
     }
 
     private static CicloViewModel? ConsultarUltimoFocoConcluido(List<CicloViewModel> ciclosDaTarefa)
