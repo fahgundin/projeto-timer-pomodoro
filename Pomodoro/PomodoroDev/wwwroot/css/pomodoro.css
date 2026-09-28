@@ -1,316 +1,223 @@
-.corpo-pomodoro {
-  margin: 0;
-  background: #1a1a1a;
-  color: #e5e5e5;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+.corpoAplicacao {
+  background-color: #1a1d21;
+  color: #e8e8e8;
+  min-height: 100vh;
 }
 
-.barra-lateral {
-  width: 48px;
-  flex-shrink: 0;
-  background: #141414;
-  border-right: 1px solid #262626;
+.barraLateral {
+  width: 56px;
+  min-height: 100vh;
+  background-color: #202225;
+  border-right: 1px solid #2f3136;
 }
 
-.botao-icone {
-  background: transparent;
-  border: none;
-  color: #6b6b6b;
+.iconeMenu {
+  color: #8a8d91;
+  font-size: 1.2rem;
+  text-decoration: none;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px;
-  border-radius: 6px;
-  transition: background 0.15s ease, color 0.15s ease;
 }
 
-.botao-icone:hover {
-  background: #2a2a2a;
+.iconeMenu:hover {
   color: #ffffff;
 }
 
-.area-conteudo {
-  position: relative;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  overflow: hidden;
+.cabecalhoTarefas {
+  border-bottom: 1px solid #2f3136;
 }
 
-.barra-superior {
-  flex-shrink: 0;
-  border-bottom: 1px solid #262626;
-  background: #1a1a1a;
-}
-
-.botao-voltar-topo {
-  background: transparent;
-  border: none;
-  color: #8a8a8a;
-  font-size: 13px;
-  cursor: pointer;
-  padding: 6px 10px;
-  border-radius: 6px;
-  transition: background 0.15s ease, color 0.15s ease;
-}
-
-.botao-voltar-topo:hover {
-  background: #2a2a2a;
+.tituloApp {
   color: #ffffff;
+  font-weight: 700;
+  font-size: 0.95rem;
 }
 
-.conteudo-principal {
-  min-width: 0;
-  min-height: 0;
-  background: #1e1e1e;
-}
-
-.cabecalho-conteudo {
-  border-bottom: 1px solid #2a2a2a;
-  flex-shrink: 0;
-}
-
-.aba {
-  background: none;
-  border: none;
-  color: #7a7a7a;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  padding: 4px 2px;
-  transition: color 0.15s ease;
-}
-
-.aba:hover {
+.abaFiltroTarefa {
   color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 
-.aba-ativa {
-  color: #ffffff;
+.itemTarefa {
+  border-bottom: 1px solid #2a2d31;
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
 }
 
-.item-tarefa {
+.itemTarefa:hover {
+  background-color: #24272b;
   cursor: pointer;
-  border-bottom: 1px solid #262626;
-  transition: background 0.15s ease;
 }
 
-.item-tarefa:hover {
-  background: #262626;
+.itemTarefaSelecionada {
+  background-color: #24272b;
+  border-left: 3px solid #3b6ef6;
 }
 
-.item-tarefa.tarefa-selecionada {
-  background: #2a2a2a;
-}
-
-.marcador-tarefa {
+.marcadorCorTarefa {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  flex-shrink: 0;
+  background-color: #2ecc71;
+  display: inline-block;
+  margin-right: 10px;
 }
 
-.nome-tarefa {
-  color: #6bc96b;
-  font-size: 13px;
-  font-weight: 500;
-  transition: color 0.15s ease;
+.nomeDaTarefa {
+  font-size: 0.95rem;
 }
 
-.item-tarefa:hover .nome-tarefa {
-  color: #8fe08f;
+.duracaoFocoTarefa {
+  font-size: 0.8rem;
+  color: #8a8d91;
 }
 
-.tempo-tarefa {
-  color: #c98b4b;
-  font-size: 12px;
+.totalFocadoHojeTarefa {
+  font-size: 0.7rem;
+  color: #3b6ef6;
+  margin-left: 6px;
 }
 
-.barra-foco {
-  display: none;
-  border-top: 1px solid #2a2a2a;
-  background: #1a1a1a;
-  flex-shrink: 0;
+.rodapeIniciar {
+  position: fixed;
+  bottom: 0;
+  left: 56px;
+  right: 0;
+  background-color: #202225;
+  border-top: 1px solid #2f3136;
+  z-index: 10;
 }
 
-.barra-foco.barra-foco-visivel {
-  display: flex;
-}
-
-.icone-foco {
-  width: 20px;
-  height: 20px;
+.iconeRodape {
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #7a9bff, #3d5cff);
-  flex-shrink: 0;
-}
-
-.rotulo-foco {
-  font-size: 10px;
-  color: #8a8a8a;
-}
-
-.tempo-foco {
-  font-size: 15px;
-  font-weight: 600;
+  background-color: #3b6ef6;
   color: #ffffff;
+  font-size: 0.9rem;
 }
 
-.botao-iniciar {
-  width: 36px;
-  height: 36px;
+.rotuloFoco {
+  font-size: 0.7rem;
+  color: #8a8d91;
+}
+
+.tempoFocoRodape {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.botaoIniciarCiclo {
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background: #4d5bf2;
+  background-color: #3b6ef6;
   border: none;
-  color: #fff;
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: background 0.15s ease, transform 0.15s ease;
+  font-size: 1.1rem;
 }
 
-.botao-iniciar:hover {
-  background: #6270ff;
-  transform: scale(1.05);
+.botaoIniciarCiclo:hover {
+  background-color: #2f5bd6;
 }
 
-.botao-iniciar svg {
-  margin-left: 2px;
+.conteudoPrincipal {
+  padding-bottom: 70px;
 }
 
-.tela-cronometro {
-  display: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  flex-direction: column;
-  align-items: center;
-  background: #1e1e1e;
-  z-index: 20;
-  overflow-y: auto;
+.telaCronometro {
+  padding: 1rem;
 }
 
-.tela-cronometro.tela-cronometro-visivel {
-  display: flex;
-}
-
-.botao-voltar-cronometro {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  background: transparent;
+.botaoVoltarCronometro {
+  background: none;
   border: none;
-  color: #8a8a8a;
-  font-size: 13px;
-  cursor: pointer;
-  padding: 6px 10px;
-  border-radius: 6px;
-  transition: background 0.15s ease, color 0.15s ease;
+  color: #8a8d91;
+  font-size: 0.85rem;
 }
 
-.botao-voltar-cronometro:hover {
-  background: #2a2a2a;
-  color: #ffffff;
+.caixaCronometro {
+  margin-top: 3rem;
 }
 
-.caixa-cronometro {
-  margin: auto;
+.nomeTarefaCronometro {
+  font-size: 0.9rem;
+  color: #8a8d91;
 }
 
-.nome-tarefa-cronometro {
-  color: #ffffff;
-  font-size: 15px;
-}
-
-.circulo-cronometro {
+.circuloCronometro {
+  position: relative;
   width: 220px;
   height: 220px;
+  margin-top: 1.5rem;
 }
 
-.svg-circulo {
+.svgCirculo {
   width: 100%;
   height: 100%;
   transform: rotate(-90deg);
 }
 
-.circulo-fundo {
+.circuloFundo {
   fill: none;
-  stroke: #2a2a2a;
-  stroke-width: 4;
+  stroke: #2a2d31;
+  stroke-width: 10;
 }
 
-.circulo-progresso {
+.circuloProgresso {
   fill: none;
-  stroke: #4d5bf2;
-  stroke-width: 4;
-  stroke-linecap: round;
+  stroke: #3b6ef6;
+  stroke-width: 10;
   stroke-dasharray: 628.32;
-  stroke-dashoffset: 628.32;
-  transition: stroke-dashoffset 1s linear;
+  stroke-dashoffset: 0;
 }
 
-.tempo-cronometro {
-  font-size: 40px;
-  font-weight: 600;
+.conteudoCirculo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tempoCronometro {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.estadoCronometro {
+  font-size: 0.85rem;
+  color: #8a8d91;
+}
+
+.acoesCronometro {
+  margin-top: 2rem;
+  gap: 0.75rem;
+}
+
+.botaoContinuar {
+  background-color: #3b6ef6;
   color: #ffffff;
-}
-
-.estado-cronometro {
-  font-size: 13px;
-  color: #8a8a8a;
-}
-
-.botao-continuar {
-  width: 220px;
-  padding: 10px 0;
-  border-radius: 20px;
   border: none;
-  background: #4d5bf2;
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s ease;
-}
-
-.botao-continuar:hover {
-  background: #6270ff;
-}
-
-.botao-fim,
-.botao-cancelar {
-  width: 104px;
-  padding: 8px 0;
   border-radius: 20px;
-  font-size: 13px;
-  font-weight: 500;
-  border: none;
-  cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  padding: 0.5rem 2rem;
 }
 
-.botao-fim {
-  background: transparent;
-  border: 1px solid #4d5bf2;
-  color: #6b7dff;
+.acoesSecundarias {
+  gap: 0.75rem;
+  margin-top: 0.5rem;
 }
 
-.botao-fim:hover {
-  background: rgba(77, 91, 242, 0.15);
-}
-
-.botao-cancelar {
-  background: transparent;
-  border: 1px solid #3a3a3a;
-  color: #8a8a8a;
-}
-
-.botao-cancelar:hover {
-  background: #2a2a2a;
-  color: #e5e5e5;
+.botaoFim, .botaoCancelar {
+  background: none;
+  border: 1px solid #3b6ef6;
+  color: #3b6ef6;
+  border-radius: 20px;
+  padding: 0.4rem 1.2rem;
 }
