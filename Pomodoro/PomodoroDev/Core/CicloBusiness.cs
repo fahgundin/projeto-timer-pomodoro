@@ -32,34 +32,28 @@ public class CicloBusiness : ICicloBusiness
     public void Pausar(CicloViewModel cicloASerPausado)
     {
         FinalizarCiclo(cicloASerPausado);
-        
+
         var ciclosDaTarefa = _cicloRepository.ObterCiclosConcluidosDeUmaTarefa(cicloASerPausado.TarefaId);
 
-        var ultimoFocoConcluido = ConsultarUltimoFocoConcluido(ciclosDaTarefa);
+        var ultimaPausaLonga = ciclosDaTarefa
+            .Where(c => c.TipoDoCiclo == TiposDeCiclo.PausaLonga)
+            .OrderByDescending(c => c.DataHoraInicio)
+            .FirstOrDefault();
 
-        if (ultimoFocoConcluido == null)
-        {
-            IniciarCiclo(cicloASerPausado.TarefaId, TiposDeCiclo.PausaCurta, cicloASerPausado);
-            return;
-        }
-        
-        var pausasConcluidasDesdeOUltimoFoco = ConsultarPausasConcluidasDesdeOUltimoFoco(ciclosDaTarefa, ultimoFocoConcluido);
+        var focosConcluidos = ConsultarFocosConcluidosDesdeAUltimaPausaLonga(ciclosDaTarefa, ultimaPausaLonga);
 
-        IniciarCiclo(
-            cicloASerPausado.TarefaId,
-            pausasConcluidasDesdeOUltimoFoco.Count() > cicloASerPausado.TarefaId.CiclosParaPausaLonga ?
-                TiposDeCiclo.PausaLonga : TiposDeCiclo.PausaCurta,
-            cicloASerPausado
-        );
-        
+        var tipoDaPausa = focosConcluidos.Count() >= cicloASerPausado.TarefaId.CiclosParaPausaLonga
+            ? TiposDeCiclo.PausaLonga
+            : TiposDeCiclo.PausaCurta;
+
+        IniciarCiclo(cicloASerPausado.TarefaId, tipoDaPausa, cicloASerPausado);
     }
-
-    private static IEnumerable<CicloViewModel> ConsultarPausasConcluidasDesdeOUltimoFoco(List<CicloViewModel> ciclosDaTarefa, CicloViewModel ultimoFocoConcluido)
+    
+    private static IEnumerable<CicloViewModel> ConsultarFocosConcluidosDesdeAUltimaPausaLonga(List<CicloViewModel> ciclosDaTarefa, CicloViewModel? ultimaPausaLonga)
     {
         return ciclosDaTarefa
-            .Where(
-                c => (c.TipoDoCiclo == TiposDeCiclo.PausaCurta) &&
-                     c.DataHoraInicio > ultimoFocoConcluido.DataHoraInicio);
+            .Where(c => c.TipoDoCiclo == TiposDeCiclo.Focus && c.Concluido == true && 
+                        (ultimaPausaLonga == null || c.DataHoraInicio > ultimaPausaLonga.DataHoraInicio));
     }
 
     private static CicloViewModel? ConsultarUltimoFocoConcluido(List<CicloViewModel> ciclosDaTarefa)

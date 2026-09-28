@@ -14,7 +14,7 @@ public class MockCicloRepository : ICicloRepository
         if (_ciclos == null)
             return new List<CicloViewModel>();
         var ciclos = _ciclos
-            .Where(c => c.TarefaId == tarefa)
+            .Where(c => c.TarefaId.TarefaId == tarefa.TarefaId)
             .Where(c => c.Concluido = true)
             .ToList();
 

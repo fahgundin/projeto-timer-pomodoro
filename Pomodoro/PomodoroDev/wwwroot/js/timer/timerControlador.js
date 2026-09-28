@@ -1,24 +1,28 @@
-angular.module('appTimer').controller('ControladorTimer', function($scope) {
+angular.module('appTimer').controller('ControladorTimer', function($scope, $http) {
 
     $scope.listaDeTarefas = [
-        { tarefaId: 1, nomeDaTarefa: 'Estudar', duracaoFocoSegundos: 5, arquivado: false, segundosFocadosHoje: 0 },
-        { tarefaId: 2, nomeDaTarefa: 'Estudar C#', duracaoFocoSegundos: 5, arquivado: false, segundosFocadosHoje: 0 },
-        { tarefaId: 3, nomeDaTarefa: 'Ler', duracaoFocoSegundos: 5, arquivado: false, segundosFocadosHoje: 0 }
+        { tarefaId: 1, nomeDaTarefa: 'Estudar', duracaoFocoSegundos: 0, arquivado: false, segundosFocadosHoje: 0 },
+        { tarefaId: 2, nomeDaTarefa: 'Estudar C#', duracaoFocoSegundos: 0, arquivado: false, segundosFocadosHoje: 0 },
+        { tarefaId: 3, nomeDaTarefa: 'Ler', duracaoFocoSegundos: 0, arquivado: false, segundosFocadosHoje: 0 }
     ];
 
-    const duracaoFocoSegundos = 5;
-    const duracaoPausaCurtaSegundos = 5;
-    const duracaoPausaLongaSegundos = 10;
-    const ciclosParaPausaLonga = 2;
+    $scope.configuracao = {
+        duracaoFocoSegundos: 5,
+        duracaoPausaCurtaSegundos: 5,
+        duracaoPausaLongaSegundos: 10,
+        ciclosParaPausaLonga: 2
+    };
+    
     const deslocamentoMinimoCirculo = 8;
 
     $scope.tarefaSelecionada = null;
     $scope.telaAtual = 'lista';
+    $scope.cicloDoServidor = null;
 
     $scope.tipoDoCicloAtual = 'foco';
     $scope.contagemEmAndamento = false;
-    $scope.segundosRestantes = duracaoFocoSegundos;
-    $scope.segundosTotaisDoCiclo = duracaoFocoSegundos;
+    $scope.segundosRestantes = $scope.configuracao.duracaoFocoSegundos;
+    $scope.segundosTotaisDoCiclo = $scope.configuracao.duracaoFocoSegundos;
     $scope.tempoFormatado = '00:00';
     $scope.estadoCronometro = 'Pausado';
     $scope.deslocamentoMinimoCirculo = deslocamentoMinimoCirculo;
@@ -46,6 +50,36 @@ angular.module('appTimer').controller('ControladorTimer', function($scope) {
         }
     }
 
+    function carregarCicloAtualDoServidor() {
+        $http.get('/Ciclo/ObterCicloAtual').then(function(resposta) {
+            const ciclo = resposta.data;
+            $scope.cicloDoServidor = ciclo;
+
+            $scope.configuracao.duracaoFocoSegundos = ciclo.tarefaId.duracaoFocoSegundos;
+            $scope.configuracao.duracaoPausaCurtaSegundos = ciclo.tarefaId.duracaoPausaCurta;
+            $scope.configuracao.duracaoPausaLongaSegundos = ciclo.tarefaId.duracaoPausaLonga;
+            $scope.configuracao.ciclosParaPausaLonga = ciclo.tarefaId.ciclosParaPausaLonga;
+
+            $scope.listaDeTarefas.forEach(function(tarefa) {
+                tarefa.duracaoFocoSegundos = $scope.configuracao.duracaoFocoSegundos;
+            });
+
+            if ($scope.telaAtual === 'lista') {
+                prepararCiclo('foco');
+            }
+        }, function() {
+            alert('Não foi possível obter o ciclo atual');
+        });
+    }
+
+    function avisarServidorDaTrocaDeCiclo() {
+        $http.get('/Ciclo/PausarOuFocar').then(function(resposta) {
+            $scope.cicloDoServidor = resposta.data;
+        }, function() {
+            alert('Não foi possível registrar a troca de fase');
+        });
+    }
+
     $scope.formatarSegundosEmMinutos = function(segundos) {
         const minutos = Math.floor(segundos / 60);
         return minutos + 'min';
@@ -58,9 +92,9 @@ angular.module('appTimer').controller('ControladorTimer', function($scope) {
     }
 
     function duracaoDoTipo(tipo) {
-        if (tipo === 'foco') { return duracaoFocoSegundos; }
-        if (tipo === 'pausaCurta') { return duracaoPausaCurtaSegundos; }
-        return duracaoPausaLongaSegundos;
+        if (tipo === 'foco') { return $scope.configuracao.duracaoFocoSegundos; }
+        if (tipo === 'pausaCurta') { return $scope.configuracao.duracaoPausaCurtaSegundos; }
+        return $scope.configuracao.duracaoPausaLongaSegundos;
     }
 
     function textoDoTipo(tipo) {
@@ -77,7 +111,7 @@ angular.module('appTimer').controller('ControladorTimer', function($scope) {
 
         if (tipo === 'foco' && $scope.tarefaSelecionada) {
             garantirContadorDoDiaAtual($scope.tarefaSelecionada);
-            $scope.tarefaSelecionada.segundosFocadosHoje += duracaoFocoSegundos;
+            $scope.tarefaSelecionada.segundosFocadosHoje += $scope.configuracao.duracaoFocoSegundos;
         }
     }
 
@@ -102,10 +136,11 @@ angular.module('appTimer').controller('ControladorTimer', function($scope) {
     function avancarProximoCiclo() {
         const tipoQueTerminou = $scope.tipoDoCicloAtual;
         registrarCicloConcluido(tipoQueTerminou);
+        avisarServidorDaTrocaDeCiclo();
 
         if (tipoQueTerminou === 'foco') {
             ciclosFocoConcluidos++;
-            if (ciclosFocoConcluidos >= ciclosParaPausaLonga) {
+            if (ciclosFocoConcluidos >= $scope.configuracao.ciclosParaPausaLonga) {
                 ciclosFocoConcluidos = 0;
                 prepararCiclo('pausaLonga');
                 iniciarContagem();
@@ -185,5 +220,7 @@ angular.module('appTimer').controller('ControladorTimer', function($scope) {
         prepararCiclo('foco');
         $scope.telaAtual = 'lista';
     };
+
+    carregarCicloAtualDoServidor();
 
 });
