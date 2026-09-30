@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build">
+    <Sdk Name="Microsoft.Build.Sql" Version="2.2.0"/>
+    <PropertyGroup>
+        <Name>Data</Name>
+        <DSP>Microsoft.Data.Tools.Schema.Sql.Sql170DatabaseSchemaProvider</DSP>
+        <ModelCollation>1033, CI</ModelCollation>
+        <ProjectGuid>8CCBDF5B-6900-4F81-AF58-BA5F0D4F8320</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+      <Folder Include="Diagnostico\" />
+      <Folder Include="Functions\" />
+      <Folder Include="Indexes\" />
+      <Folder Include="Rollback\" />
+      <Folder Include="Security\" />
+      <Folder Include="Seed\" />
+      <Folder Include="StoredProcedures\" />
+      <Folder Include="Triggers\" />
+      <Folder Include="Types\" />
+      <Folder Include="Views\" />
+    </ItemGroup>
+    <ItemGroup>
+      <Content Include="Migrate.ps1" />
+    </ItemGroup>
+</Project>
