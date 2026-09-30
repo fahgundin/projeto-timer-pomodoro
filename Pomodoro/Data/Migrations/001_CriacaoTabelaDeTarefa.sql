@@ -14,7 +14,6 @@
 USE Pomodoro;
 GO
 
--- Se já foi aplicada, pula todos os lotes até o SET NOEXEC OFF do final
 IF EXISTS (SELECT 1 FROM dbo.HistoricoMigracoes WHERE Nome = '001_CriacaoTabelaDeTarefa')
     BEGIN
         PRINT 'Migration 001_CriacaoTabelaDeTarefa já aplicada. Nada a fazer.';
@@ -22,7 +21,7 @@ IF EXISTS (SELECT 1 FROM dbo.HistoricoMigracoes WHERE Nome = '001_CriacaoTabelaD
     END
 GO
 
-SET XACT_ABORT ON;  -- qualquer erro derruba a transação inteira
+SET XACT_ABORT ON; 
 BEGIN TRY
     BEGIN TRANSACTION;
     
