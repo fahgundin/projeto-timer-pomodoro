@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PomodoroDev", "PomodoroDev\PomodoroDev.csproj", "{08395757-59F7-4BED-8908-021BF0FFCD2D}"
+EndProject
+Project("{42EA0DBD-9CF1-443E-919E-BE9C484E4577}") = "Data", "Data\Data.sqlproj", "{8CCBDF5B-6900-4F81-AF58-BA5F0D4F8320}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{08395757-59F7-4BED-8908-021BF0FFCD2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08395757-59F7-4BED-8908-021BF0FFCD2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08395757-59F7-4BED-8908-021BF0FFCD2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08395757-59F7-4BED-8908-021BF0FFCD2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CCBDF5B-6900-4F81-AF58-BA5F0D4F8320}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CCBDF5B-6900-4F81-AF58-BA5F0D4F8320}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CCBDF5B-6900-4F81-AF58-BA5F0D4F8320}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CCBDF5B-6900-4F81-AF58-BA5F0D4F8320}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
