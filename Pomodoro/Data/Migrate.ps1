@@ -10,7 +10,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-function Executar-Pasta([string]$caminhoPasta) {
+function Executar-Pasta([string]$caminhoPasta, [bool]$especificarBanco = $true) {
     if (-not (Test-Path $caminhoPasta)) { return }
 
     Write-Host "`n==========================================" -ForegroundColor Yellow
@@ -18,13 +18,16 @@ function Executar-Pasta([string]$caminhoPasta) {
     Write-Host "==========================================" -ForegroundColor Yellow
 
     Get-ChildItem -Path "$caminhoPasta\*.sql" | Sort-Object Name | ForEach-Object {
-        $arquivo =$_.Name
+        $arquivo = $_.Name
         $caminhoArquivo = $_.FullName
         Write-Host " -> Verificando: $arquivo..." -NoNewline
 
         try {
-            # Executa o SQL via sqlcmd e captura o log de retorno
-            $resultado = sqlcmd -S $Servidor -d $Banco -E -i "$caminhoArquivo" -b 2>&1
+            if ($especificarBanco) {
+                $resultado = sqlcmd -S $Servidor -d $Banco -E -i "$caminhoArquivo" -b 2>&1
+            } else {
+                $resultado = sqlcmd -S $Servidor -E -i "$caminhoArquivo" -b 2>&1
+            }
 
             if ($resultado -match "já aplicada") {
                 Write-Host " [JÁ APLICADA / IGNORADA]" -ForegroundColor DarkGray
@@ -43,8 +46,8 @@ function Executar-Pasta([string]$caminhoPasta) {
 # --- FLUXO DE EXECUÇÃO ---
 Write-Host "Iniciando verificação do banco '$Banco'..." -ForegroundColor Cyan
 
-Executar-Pasta ".\Setup"
-Executar-Pasta ".\Migrations"
+Executar-Pasta ".\Setup" $false
+Executar-Pasta ".\Migrations" $true
 
 Write-Host "`nBanco de dados atualizado com sucesso!" -ForegroundColor Green
 
@@ -65,6 +68,7 @@ if (Test-Path $projetoCsharp) {
         # Executa o scaffold apontando para a pasta do PomodoroDev
         dotnet ef dbcontext scaffold $connectionString Microsoft.EntityFrameworkCore.SqlServer `
             --project $projetoCsharp `
+            --startup-project $projetoCsharp `
             --output-dir Entities `
             --context-dir Context `
             --context PomodoroDbContext `

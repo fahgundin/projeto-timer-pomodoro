@@ -22,4 +22,20 @@
     <ItemGroup>
       <Content Include="Migrate.ps1" />
     </ItemGroup>
+    <ItemGroup>
+      <Build Remove="Tables\Ciclos.sql" />
+      <None Include="Tables\Ciclos.sql" />
+      <Build Remove="Tables\Tarefas.sql" />
+      <None Include="Tables\Tarefas.sql" />
+      <Build Remove="Setup\020_HistoricoMigracoes.sql" />
+      <None Include="Setup\020_HistoricoMigracoes.sql" />
+      <Build Remove="Setup\000_CriarBanco.sql" />
+      <None Include="Setup\000_CriarBanco.sql" />
+      <Build Remove="Migrations\002_CriacaoDeTabelaCiclo.sql" />
+      <None Include="Migrations\002_CriacaoDeTabelaCiclo.sql" />
+      <Build Remove="Migrations\001_CriacaoTabelaDeTarefa.sql" />
+      <None Include="Migrations\001_CriacaoTabelaDeTarefa.sql" />
+      <Build Remove="Migrations\000_TemplateMigration.sql" />
+      <None Include="Migrations\000_TemplateMigration.sql" />
+    </ItemGroup>
 </Project>
