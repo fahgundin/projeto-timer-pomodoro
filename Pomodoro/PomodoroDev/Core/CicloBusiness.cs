@@ -1,122 +1,108 @@
-﻿using WebApplication1.Intefaces.Core;
+﻿using WebApplication1.Entities;
+using WebApplication1.Intefaces.Core;
 using WebApplication1.Intefaces.Repositorios;
 using WebApplication1.ViewModels;
 using WebApplication1.ViewModels.Enums;
 
 namespace WebApplication1.Core;
 
-public class CicloBusiness : ICicloBusiness
+public class CicloBusiness(ICicloRepository cicloRepository) : ICicloBusiness
 {
-
-    private ICicloRepository _cicloRepository;
-    private ITarefaRepository _tarefaRepository;
-    public CicloBusiness(ICicloRepository cicloRepository, ITarefaRepository tarefaRepository)
-    {
-        _cicloRepository = cicloRepository;
-        _tarefaRepository = tarefaRepository;
-    }
     
-    public void IniciarCiclo(TarefaViewModel tarefa, TiposDeCiclo tipoDoCiclo, CicloViewModel cicloAtual)
+    private Ciclo IniciarCiclo(int tarefaId, TiposDeCiclo tipoDoCiclo)
     {
-        var novoCiclo = new CicloViewModel
+        var novoCiclo = new Ciclo
         {
-            CicloId = cicloAtual.CicloId + 1,
-            TarefaId = tarefa,
-            DataHoraInicio = DateTime.Now,
-            TipoDoCiclo = tipoDoCiclo,
+            TarefaId = tarefaId,
+            DataHoraInicio = DateTimeOffset.UtcNow,
+            TipoDoCiclo = (int) tipoDoCiclo,
             Concluido = false
         };
-        _cicloRepository.CriarCiclo(novoCiclo);
+        cicloRepository.CriarCiclo(novoCiclo);
+        return novoCiclo;
     }
 
-    public void Pausar(CicloViewModel cicloASerPausado)
+    private async Task<Ciclo> Pausar(Ciclo cicloASerPausado)
     {
         FinalizarCiclo(cicloASerPausado);
 
-        var ciclosDaTarefa = _cicloRepository.ObterCiclosConcluidosDeUmaTarefa(cicloASerPausado.TarefaId);
+        var focosConcluidosDesdeAUltimaPausaLonga =
+            await cicloRepository.ConsultarQuantidadeDeFocosConcluidosDesdeAUltimaPausaLonga(cicloASerPausado.TarefaId);
 
-        var ultimaPausaLonga = ciclosDaTarefa
-            .Where(c => c.TipoDoCiclo == TiposDeCiclo.PausaLonga)
-            .OrderByDescending(c => c.DataHoraInicio)
-            .FirstOrDefault();
-
-        var focosConcluidos = ConsultarFocosConcluidosDesdeAUltimaPausaLonga(ciclosDaTarefa, ultimaPausaLonga);
-
-        var tipoDaPausa = focosConcluidos.Count() >= cicloASerPausado.TarefaId.CiclosParaPausaLonga
+        var tipoDaPausa = focosConcluidosDesdeAUltimaPausaLonga >= cicloASerPausado.Tarefa.CiclosParaPausaLonga
             ? TiposDeCiclo.PausaLonga
             : TiposDeCiclo.PausaCurta;
 
-        IniciarCiclo(cicloASerPausado.TarefaId, tipoDaPausa, cicloASerPausado);
-    }
-    
-    private static IEnumerable<CicloViewModel> ConsultarFocosConcluidosDesdeAUltimaPausaLonga(List<CicloViewModel> ciclosDaTarefa, CicloViewModel? ultimaPausaLonga)
-    {
-        return ciclosDaTarefa
-            .Where(c => c.TipoDoCiclo == TiposDeCiclo.Focus && c.Concluido == true && 
-                        (ultimaPausaLonga == null || c.DataHoraInicio > ultimaPausaLonga.DataHoraInicio));
+        return IniciarCiclo(cicloASerPausado.TarefaId, tipoDaPausa);
     }
 
-    private static CicloViewModel? ConsultarUltimoFocoConcluido(List<CicloViewModel> ciclosDaTarefa)
-    {
-        return ciclosDaTarefa
-            .Where(c =>
-                (c.TipoDoCiclo == TiposDeCiclo.Focus) &&
-                (c.Concluido == true))
-            .OrderByDescending(c => c.DataHoraInicio)
-            .FirstOrDefault();
-    }
-
-    public void Focar(CicloViewModel cicloASerFocado)
+    private Ciclo Focar(Ciclo cicloASerFocado)
     {
         FinalizarCiclo(cicloASerFocado);
         
-        IniciarCiclo(cicloASerFocado.TarefaId, TiposDeCiclo.Focus, cicloASerFocado);
+        return IniciarCiclo(cicloASerFocado.TarefaId, TiposDeCiclo.Focus);
     }
 
-    public CicloViewModel ObterCicloAtual()
+    public async Task<Ciclo?> ObterCicloAtual()
     {
-        var tarefa = _tarefaRepository.ObterTarefaAtual();
-        return _cicloRepository.ObterCicloAtual(tarefa);
+        return await cicloRepository.ObterCicloAtual();
     }
 
-    public CicloViewModel MudarDeCiclo()
+    public async Task<Ciclo> MudarDeCiclo()
     {
-        var tarefa = _tarefaRepository.ObterTarefaAtual();
-        if (tarefa.DataHoraFim != null)
-            throw new InvalidOperationException("A tarefa selecionada já foi finalizada");
         
-        var cicloAtual = _cicloRepository.ObterCicloAtual(tarefa);
-        if (cicloAtual.TipoDoCiclo == TiposDeCiclo.Focus)
-            Pausar(cicloAtual);
+        var cicloAtual = await ObterCicloAtual();
+        
+        if (cicloAtual == null)
+            throw new KeyNotFoundException("Não existem ciclos abertos");
+        
+        if (cicloAtual.TipoDoCiclo == (int) TiposDeCiclo.Focus)
+            return await Pausar(cicloAtual);
         else
-            Focar(cicloAtual);
-
-        return _cicloRepository.ObterCicloAtual(tarefa);
+            return Focar(cicloAtual);
     }
-    
-    public void FinalizarCiclo(CicloViewModel ciclo)
+
+    public async Task<Ciclo> FinalizarCicloAtual()
+    {
+        var cicloAtual = await ObterCicloAtual();
+        if (cicloAtual == null)
+            throw new KeyNotFoundException("Não existem ciclos abertos");
+        return await cicloRepository.FinalizarCiclo(cicloAtual);
+    }
+
+    public async Task<Ciclo> IniciarCiclo(int tarefaId)
+    {
+        var novoCiclo = IniciarCiclo(tarefaId, TiposDeCiclo.Focus);
+
+        return novoCiclo;
+    }
+
+    private void FinalizarCiclo(Ciclo ciclo)
     {
         if ((ciclo.DataHoraFim != null) || (ciclo.Concluido == true))
             throw new InvalidOperationException("Ciclo já foi finalizado");
+
+        cicloRepository.FinalizarCiclo(ciclo);
+
+        if (ciclo.DataHoraFim == null || ciclo.DataHoraInicio == null)
+            return;
         
-        ciclo.DataHoraFim = DateTime.Now;
-        TimeSpan diferenca = ciclo.DataHoraFim.Value - ciclo.DataHoraInicio;
+        TimeSpan diferenca = (ciclo.DataHoraFim.Value - ciclo.DataHoraInicio.Value);
         
         var segundosDeDiferenca = diferenca.TotalSeconds;
         int segundosDeComparacao = ObterSegundosDeComparacao(ciclo);
 
         if (segundosDeDiferenca >= segundosDeComparacao)
-            ciclo.Concluido = true;
-        
+            cicloRepository.DefinirCicloComoConcluido(ciclo.CicloId);
     }
 
-    private static int ObterSegundosDeComparacao(CicloViewModel ciclo)
+    private static int ObterSegundosDeComparacao(Ciclo ciclo)
     {
         return ciclo.TipoDoCiclo switch
         {
-            TiposDeCiclo.Focus => ciclo.TarefaId.DuracaoFocoSegundos,
-            TiposDeCiclo.PausaLonga => ciclo.TarefaId.DuracaoPausaLonga,
-            TiposDeCiclo.PausaCurta => ciclo.TarefaId.DuracaoPausaCurta,
+            (int) TiposDeCiclo.Focus => ciclo.Tarefa.DuracaoFocoSegundos,
+            (int) TiposDeCiclo.PausaLonga => ciclo.Tarefa.DuracaoPausaLonga,
+            (int) TiposDeCiclo.PausaCurta => ciclo.Tarefa.DuracaoPausaCurta,
             _ => 0
         };
     }

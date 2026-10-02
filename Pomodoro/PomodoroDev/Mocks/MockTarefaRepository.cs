@@ -1,4 +1,5 @@
-﻿using WebApplication1.Intefaces.Repositorios;
+﻿using WebApplication1.Entities;
+using WebApplication1.Intefaces.Repositorios;
 using WebApplication1.ViewModels;
 
 namespace WebApplication1.Mocks;
@@ -6,17 +7,17 @@ namespace WebApplication1.Mocks;
 public class MockTarefaRepository : ITarefaRepository 
 {
     
-    public List<TarefaViewModel> ObterTarefas()
+    public Task<List<Tarefa>> ObterTarefas()
     {
         throw new NotImplementedException();
     }
 
-    public void AtualizarTarefa(TarefaViewModel tarefa)
+    public Task AtualizarTarefa(TarefaViewModel tarefa)
     {
         throw new NotImplementedException();
     }
 
-    public void ExcluirTarefa(TarefaViewModel tarefa)
+    public Task ArquivarTarefa(int tarefaId)
     {
         throw new NotImplementedException();
     }

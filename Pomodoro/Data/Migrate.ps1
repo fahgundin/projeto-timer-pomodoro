@@ -68,6 +68,7 @@ if (Test-Path $projetoCsharp) {
             --output-dir Entities `
             --context-dir Context `
             --context PomodoroDbContext `
+            --no-onconfiguring `
             --force
 
         Write-Host " [OK] Entidades C# atualizadas em $projetoCsharp\Entities!" -ForegroundColor Green

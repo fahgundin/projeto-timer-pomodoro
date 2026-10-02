@@ -1,16 +1,20 @@
-﻿using WebApplication1.ViewModels;
-
+﻿using WebApplication1.Entities;
 namespace WebApplication1.Intefaces.Repositorios;
 
 public interface ICicloRepository
 {
-    public List<CicloViewModel> ObterCiclosConcluidosDeUmaTarefa(TarefaViewModel tarefa);
+    Task<List<Ciclo>> ObterCiclosConcluidosDeUmaTarefa(int tarefaId);
     
-    public CicloViewModel ObterCicloAtual(TarefaViewModel tarefaAtual);
+    Task<Ciclo> ObterCicloAtual();
     
-    public void DefinirCicloComoConcluido(CicloViewModel ciclo);
+    Task DefinirCicloComoConcluido(int cicloId);
     
-    public void CriarCiclo(CicloViewModel ciclo);
+    Task CriarCiclo(Ciclo ciclo);
+    
+    Task<Ciclo> FinalizarCiclo(Ciclo ciclo);
+
+    Task<int> ConsultarQuantidadeDeFocosConcluidosDesdeAUltimaPausaLonga(int tarefaId);
+
 
 
 }
