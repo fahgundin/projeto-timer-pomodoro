@@ -13,16 +13,30 @@ public class CicloController : Controller
     }
 
     [HttpGet]
-    public JsonResult PausarOuFocar()
+    public async Task<JsonResult> PausarOuFocar()
     {
         var ciclo = _cicloBusiness.MudarDeCiclo();
         return new JsonResult(ciclo);
     }
 
     [HttpGet]
-    public JsonResult ObterCicloAtual()
+    public async Task<JsonResult> ObterCicloAtual()
     {
-        var ciclo = _cicloBusiness.ObterCicloAtual();
+        var ciclo = await _cicloBusiness.ObterCicloAtual();
         return new JsonResult(ciclo);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> FinalizarCicloAtual()
+    {
+        var cicloFinalizado = await _cicloBusiness.FinalizarCicloAtual();
+        return Ok(cicloFinalizado);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> IniciarCiclo([FromQuery] int tarefaId)
+    {
+        var cicloIniciado = await _cicloBusiness.IniciarCiclo(tarefaId);
+        return Ok(cicloIniciado);
     }
 }

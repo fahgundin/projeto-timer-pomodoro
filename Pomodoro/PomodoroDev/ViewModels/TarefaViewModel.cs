@@ -2,7 +2,7 @@
 
 public class TarefaViewModel
 {
-    public int TarefaId { get; set; }
+    public int? TarefaId { get; set; }
     
     public required string NomeDaTarefa { get; set; }
     

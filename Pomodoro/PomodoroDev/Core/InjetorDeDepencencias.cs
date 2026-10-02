@@ -13,6 +13,8 @@ public static class InjetorDeDepencencias
 
         services.AddSingleton<ICicloBusiness, CicloBusiness>();
         
+       
+        
         return services;
     }
 }
