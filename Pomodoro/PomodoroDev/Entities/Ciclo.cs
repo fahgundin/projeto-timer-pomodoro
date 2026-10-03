@@ -17,5 +17,7 @@ public partial class Ciclo
 
     public bool Concluido { get; set; }
 
+    public int DuracaoPlanejadaSegundos { get; set; }
+
     public virtual Tarefa Tarefa { get; set; } = null!;
 }

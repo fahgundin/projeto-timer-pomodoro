@@ -27,6 +27,11 @@ public class MockTarefaRepository : ITarefaRepository
         throw new NotImplementedException();
     }
 
+    public Task ExcluirTarefa(int tarefaId)
+    {
+        throw new NotImplementedException();
+    }
+
     public TarefaViewModel ObterTarefaAtual()
     {
         return new TarefaViewModel

@@ -23,5 +23,7 @@ public partial class Tarefa
 
     public bool Arquivado { get; set; }
 
+    public string Cor { get; set; } = null!;
+
     public virtual ICollection<Ciclo> Ciclos { get; set; } = new List<Ciclo>();
 }

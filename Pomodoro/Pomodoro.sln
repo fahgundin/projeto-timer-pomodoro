@@ -1,8 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.9.12120.119 stable
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PomodoroDev", "PomodoroDev\PomodoroDev.csproj", "{08395757-59F7-4BED-8908-021BF0FFCD2D}"
 EndProject
-Project("{42EA0DBD-9CF1-443E-919E-BE9C484E4577}") = "Data", "Data\Data.sqlproj", "{8CCBDF5B-6900-4F81-AF58-BA5F0D4F8320}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Data", "Data\Data.sqlproj", "{8CCBDF5B-6900-4F81-AF58-BA5F0D4F8320}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +18,10 @@ Global
 		{08395757-59F7-4BED-8908-021BF0FFCD2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08395757-59F7-4BED-8908-021BF0FFCD2D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8CCBDF5B-6900-4F81-AF58-BA5F0D4F8320}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8CCBDF5B-6900-4F81-AF58-BA5F0D4F8320}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8CCBDF5B-6900-4F81-AF58-BA5F0D4F8320}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8CCBDF5B-6900-4F81-AF58-BA5F0D4F8320}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

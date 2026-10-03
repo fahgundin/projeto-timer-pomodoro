@@ -23,6 +23,11 @@ public class TarefaBusiness(ITarefaRepository tarefaRepository) : ITarefaBusines
         await tarefaRepository.ArquivarTarefa(tarefaId);
     }
 
+    public async Task ExcluirTarefa(int tarefaId)
+    {
+        await tarefaRepository.ExcluirTarefa(tarefaId);
+    }
+
     public void CriarTarefa(TarefaViewModel tarefa)
     {
         tarefaRepository.CriarTarefa(tarefa);

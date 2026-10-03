@@ -1,11 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Context;
 using WebApplication1.Core;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(opcoes => opcoes.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 builder.Services.InjetarDependencias();
 

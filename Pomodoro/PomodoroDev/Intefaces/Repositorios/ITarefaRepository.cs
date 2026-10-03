@@ -6,11 +6,12 @@ namespace WebApplication1.Intefaces.Repositorios;
 public interface ITarefaRepository
 {
     Task<List<Tarefa>> ObterTarefas();
-    
+
     Task AtualizarTarefa(TarefaViewModel tarefa);
-    
+
     Task ArquivarTarefa(int tarefaId);
-    
+
+    Task ExcluirTarefa(int tarefaId);
+
     void CriarTarefa(TarefaViewModel tarefa);
-    
 }

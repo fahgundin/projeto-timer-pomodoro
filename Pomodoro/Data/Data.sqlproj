@@ -1,41 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build">
-    <Sdk Name="Microsoft.Build.Sql" Version="2.2.0"/>
-    <PropertyGroup>
-        <Name>Data</Name>
-        <DSP>Microsoft.Data.Tools.Schema.Sql.Sql170DatabaseSchemaProvider</DSP>
-        <ModelCollation>1033, CI</ModelCollation>
-        <ProjectGuid>8CCBDF5B-6900-4F81-AF58-BA5F0D4F8320</ProjectGuid>
-    </PropertyGroup>
-    <ItemGroup>
-      <Folder Include="Diagnostico\" />
-      <Folder Include="Functions\" />
-      <Folder Include="Indexes\" />
-      <Folder Include="Rollback\" />
-      <Folder Include="Security\" />
-      <Folder Include="Seed\" />
-      <Folder Include="StoredProcedures\" />
-      <Folder Include="Triggers\" />
-      <Folder Include="Types\" />
-      <Folder Include="Views\" />
-    </ItemGroup>
-    <ItemGroup>
-      <Content Include="Migrate.ps1" />
-    </ItemGroup>
-    <ItemGroup>
-      <Build Remove="Tables\Ciclos.sql" />
-      <None Include="Tables\Ciclos.sql" />
-      <Build Remove="Tables\Tarefas.sql" />
-      <None Include="Tables\Tarefas.sql" />
-      <Build Remove="Setup\020_HistoricoMigracoes.sql" />
-      <None Include="Setup\020_HistoricoMigracoes.sql" />
-      <Build Remove="Setup\000_CriarBanco.sql" />
-      <None Include="Setup\000_CriarBanco.sql" />
-      <Build Remove="Migrations\002_CriacaoDeTabelaCiclo.sql" />
-      <None Include="Migrations\002_CriacaoDeTabelaCiclo.sql" />
-      <Build Remove="Migrations\001_CriacaoTabelaDeTarefa.sql" />
-      <None Include="Migrations\001_CriacaoTabelaDeTarefa.sql" />
-      <Build Remove="Migrations\000_TemplateMigration.sql" />
-      <None Include="Migrations\000_TemplateMigration.sql" />
-    </ItemGroup>
+  <Sdk Name="Microsoft.Build.Sql" Version="2.2.0" />
+  <PropertyGroup>
+    <Name>Data</Name>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql170DatabaseSchemaProvider</DSP>
+    <ModelCollation>1033, CI</ModelCollation>
+    <ProjectGuid>8CCBDF5B-6900-4F81-AF58-BA5F0D4F8320</ProjectGuid>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Diagnostico\" />
+    <Folder Include="Functions\" />
+    <Folder Include="Indexes\" />
+    <Folder Include="Rollback\" />
+    <Folder Include="Security\" />
+    <Folder Include="Seed\" />
+    <Folder Include="StoredProcedures\" />
+    <Folder Include="Triggers\" />
+    <Folder Include="Types\" />
+    <Folder Include="Views\" />
+    <Folder Include="Migrations\" />
+    <Folder Include="Tables\" />
+    <Folder Include="Setup\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Migrate.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Remove="Tables\Ciclos.sql" />
+    <None Include="Migrations\003_AdicaoDeCorNaTabelaDeTarefa.sql" />
+    <None Include="Tables\Ciclos.sql" />
+    <Build Remove="Tables\Tarefas.sql" />
+    <None Include="Tables\Tarefas.sql" />
+    <Build Remove="Setup\020_HistoricoMigracoes.sql" />
+    <None Include="Setup\020_HistoricoMigracoes.sql" />
+    <Build Remove="Setup\000_CriarBanco.sql" />
+    <None Include="Setup\000_CriarBanco.sql" />
+    <Build Remove="Migrations\002_CriacaoDeTabelaCiclo.sql" />
+    <None Include="Migrations\002_CriacaoDeTabelaCiclo.sql" />
+    <Build Remove="Migrations\001_CriacaoTabelaDeTarefa.sql" />
+    <None Include="Migrations\001_CriacaoTabelaDeTarefa.sql" />
+    <Build Remove="Migrations\000_TemplateMigration.sql" />
+    <None Include="Migrations\000_TemplateMigration.sql" />
+    <None Include="Migrations\004_AdicaoDeDuracaoPlanejadaNoCiclo.sql" />
+  </ItemGroup>
 </Project>
