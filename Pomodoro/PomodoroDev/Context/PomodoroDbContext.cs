@@ -7,10 +7,6 @@ namespace WebApplication1.Context;
 
 public partial class PomodoroDbContext : DbContext
 {
-    public PomodoroDbContext()
-    {
-    }
-
     public PomodoroDbContext(DbContextOptions<PomodoroDbContext> options)
         : base(options)
     {
@@ -21,11 +17,6 @@ public partial class PomodoroDbContext : DbContext
     public virtual DbSet<HistoricoMigraco> HistoricoMigracoes { get; set; }
 
     public virtual DbSet<Tarefa> Tarefas { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -50,6 +41,10 @@ public partial class PomodoroDbContext : DbContext
 
         modelBuilder.Entity<Tarefa>(entity =>
         {
+            entity.Property(e => e.Cor)
+                .HasMaxLength(7)
+                .IsUnicode(false)
+                .HasDefaultValue("#4b5563", "DF_Tarefas_Cor");
             entity.Property(e => e.NomeDaTarefa)
                 .HasMaxLength(100)
                 .IsUnicode(false);

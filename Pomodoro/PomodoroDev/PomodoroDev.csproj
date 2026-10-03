@@ -2098,6 +2098,10 @@
     <ItemGroup>
       <Folder Include="Context\" />
       <Folder Include="Entities\" />
+      <Folder Include="wwwroot\css\configuracao\" />
+      <Folder Include="wwwroot\css\relatorio\" />
+      <Folder Include="wwwroot\js\configuracao\" />
+      <Folder Include="wwwroot\js\relatorio\" />
     </ItemGroup>
 
     <ItemGroup>

@@ -8,18 +8,19 @@ namespace WebApplication1.Repositories;
 
 public class TarefaRepository(PomodoroDbContext contexto) : ITarefaRepository
 {
-    public Task<List<Tarefa>> ObterTarefas()
+    public async Task<List<Tarefa>> ObterTarefas()
     {
-        //TODO BUSCAR VALORES POR PROCEDURES
-        
-        throw new NotImplementedException();
+        return await contexto.Tarefas
+            .AsNoTracking()
+            .OrderBy(t => t.TarefaId)
+            .ToListAsync();
     }
 
     public async Task AtualizarTarefa(TarefaViewModel tarefa)
     {
         if (tarefa.TarefaId == null)
             throw new ArgumentException("Por favor inserir o Id da tarefa", nameof(tarefa));
-        
+
         var tarefaDoBanco = contexto.Tarefas.FirstOrDefault(t => t.TarefaId == tarefa.TarefaId);
         if (tarefaDoBanco == null)
             throw new KeyNotFoundException($"Tarefa {tarefa.TarefaId} não encontrada.");
@@ -31,7 +32,8 @@ public class TarefaRepository(PomodoroDbContext contexto) : ITarefaRepository
         tarefaDoBanco.DuracaoPausaCurta = tarefa.DuracaoPausaCurta;
         tarefaDoBanco.CiclosParaPausaLonga = tarefa.CiclosParaPausaLonga;
         tarefaDoBanco.Arquivado = tarefa.Arquivado;
-            
+        tarefaDoBanco.Cor = tarefa.Cor;
+
         await contexto.SaveChangesAsync();
     }
 
@@ -39,7 +41,7 @@ public class TarefaRepository(PomodoroDbContext contexto) : ITarefaRepository
     {
         var linhasAfetadas = await contexto.Tarefas.Where(t => t.TarefaId == tarefaId)
             .ExecuteUpdateAsync(s => s.SetProperty(t => t.Arquivado, true));
-        
+
         if (linhasAfetadas == 0)
         {
             var existe = await contexto.Tarefas.AnyAsync(t => t.TarefaId == tarefaId);
@@ -48,18 +50,38 @@ public class TarefaRepository(PomodoroDbContext contexto) : ITarefaRepository
         }
     }
 
+    public async Task ExcluirTarefa(int tarefaId)
+    {
+        await using var transacao = await contexto.Database.BeginTransactionAsync();
+
+        await contexto.Ciclos
+            .Where(c => c.TarefaId == tarefaId)
+            .ExecuteDeleteAsync();
+
+        var linhasAfetadas = await contexto.Tarefas
+            .Where(t => t.TarefaId == tarefaId)
+            .ExecuteDeleteAsync();
+
+        if (linhasAfetadas == 0)
+            throw new KeyNotFoundException("Tarefa não encontrada");
+
+        await transacao.CommitAsync();
+    }
+
     public void CriarTarefa(TarefaViewModel tarefa)
     {
         var tarefaASerCriada = new Tarefa()
         {
-            NomeDaTarefa =  tarefa.NomeDaTarefa,
+            NomeDaTarefa = tarefa.NomeDaTarefa,
             DuracaoFocoSegundos = tarefa.DuracaoFocoSegundos,
             DuracaoPausaLonga = tarefa.DuracaoPausaLonga,
             DuracaoPausaCurta = tarefa.DuracaoPausaCurta,
-            CiclosParaPausaLonga =  tarefa.CiclosParaPausaLonga,
+            CiclosParaPausaLonga = tarefa.CiclosParaPausaLonga,
+            DataHoraInicio = DateTimeOffset.Now,
             Arquivado = false,
+            Cor = tarefa.Cor,
         };
         contexto.Tarefas.Add(tarefaASerCriada);
-        
+        contexto.SaveChanges();
     }
 }

@@ -1,25 +1,25 @@
-﻿<div class="telaCronometro" ng-show="telaAtual === 'cronometro'">
-    <button class="botaoVoltarCronometro d-flex align-items-center" ng-click="cancelarCiclo()">
-        <i class="bi bi-chevron-left"></i><span class="ms-1">{{ estadoCronometro }}</span>
-    </button>
-    <div class="caixaCronometro d-flex flex-column align-items-center">
-        <span class="nomeTarefaCronometro">{{ tarefaSelecionada.nomeDaTarefa }}</span>
-        <div class="circuloCronometro">
-            <svg class="svgCirculo" viewBox="0 0 220 220">
-                <circle class="circuloFundo" cx="110" cy="110" r="100"></circle>
-                <circle class="circuloProgresso" cx="110" cy="110" r="100"
+﻿<div class="px-4 py-3" ng-show="telaAtual === 'cronometro'">
+    <div class="d-flex align-items-center mb-4">
+        <button type="button" class="botaoVoltar me-3" ng-click="cancelarCiclo()"><i class="bi bi-arrow-left"></i></button>
+        <h1 class="tituloPagina mb-0">{{ tarefaSelecionada.nomeDaTarefa }}</h1>
+    </div>
+    <div class="d-flex flex-column align-items-center">
+        <div class="timerCirculo">
+            <svg class="timerCirculoSvg" viewBox="0 0 220 220">
+                <circle class="timerCirculoFundo" cx="110" cy="110" r="100"></circle>
+                <circle class="timerCirculoProgresso" cx="110" cy="110" r="100"
                         ng-style="{ 'stroke-dashoffset': deslocamentoMinimoCirculo + (628.32 - deslocamentoMinimoCirculo) * (segundosRestantes / segundosTotaisDoCiclo) }"></circle>
             </svg>
-            <div class="conteudoCirculo d-flex flex-column align-items-center">
-                <span class="tempoCronometro">{{ tempoFormatado }}</span>
-                <span class="estadoCronometro">{{ estadoCronometro }}</span>
+            <div class="timerCirculoConteudo d-flex flex-column align-items-center">
+                <span class="timerTempo">{{ tempoFormatado }}</span>
+                <span class="timerEstado">{{ estadoCronometro }}</span>
             </div>
         </div>
-        <div class="acoesCronometro d-flex flex-column align-items-center">
-            <button class="botaoContinuar" ng-click="alternarPausa()">{{ contagemEmAndamento ? 'Pausar' : 'Continuar' }}</button>
-            <div class="acoesSecundarias d-flex">
-                <button class="botaoFim" ng-click="encerrarCiclo()">Fim</button>
-                <button class="botaoCancelar" ng-click="cancelarCiclo()">Cancelar</button>
+        <div class="timerAcoes d-flex flex-column">
+            <button class="botaoPrimario w-100" ng-click="alternarPausa()">{{ contagemEmAndamento ? 'Pausar' : 'Continuar' }}</button>
+            <div class="timerAcoesSecundarias d-flex">
+                <button class="botaoSecundario botaoExpandido" ng-click="encerrarCiclo()">Fim</button>
+                <button class="botaoSecundario botaoExpandido" ng-click="cancelarCiclo()">Cancelar</button>
             </div>
         </div>
     </div>

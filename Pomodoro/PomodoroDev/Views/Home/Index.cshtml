@@ -2,35 +2,47 @@
     ViewData["Title"] = "Timer";
 }
 <div id="paginaTimer" ng-app="appTimer" ng-controller="ControladorTimer">
-    <div class="cabecalhoTarefas d-flex align-items-center px-3 py-2">
-        <span class="tituloApp me-4">Pomodoro</span>
-        <span class="abaFiltroTarefa">Ativo</span>
-    </div>
-    
-    <ul class="listaDeTarefas list-unstyled mb-0" ng-show="telaAtual === 'lista'">
-        <li class="itemTarefa d-flex justify-content-between align-items-center px-3"
-            ng-repeat="tarefa in listaDeTarefas"
-            ng-click="selecionarTarefa(tarefa)"
-            ng-class="{ 'itemTarefaSelecionada': tarefa === tarefaSelecionada }">
-            <span class="d-flex align-items-center">
-                <span class="marcadorCorTarefa"></span>
-                <span class="nomeDaTarefa">{{ tarefa.nomeDaTarefa }}</span>
-            </span>
-            <span class="totalFocadoHojeTarefa">{{ tarefa.segundosFocadosHoje }}s hoje</span>
-        </li>
-    </ul>
-    @await Html.PartialAsync("_Cronometro")
-    <div class="rodapeIniciar d-flex align-items-center justify-content-between px-3 py-2" ng-show="telaAtual === 'lista' && tarefaSelecionada">
-        <div class="d-flex align-items-center">
-            <div class="iconeRodape d-flex align-items-center justify-content-center"><i class="bi bi-clock"></i></div>
-            <div class="ms-2">
-                <div class="rotuloFoco">Foco</div>
-                <div class="tempoFocoRodape">{{ tarefaSelecionada.duracaoFocoSegundos || 0 }}s</div>
-            </div>
+
+    <div ng-show="telaAtual === 'lista'">
+        <div class="cabecalhoPagina d-flex justify-content-between align-items-center px-4 py-3">
+            <h1 class="tituloPagina mb-0">Timer</h1>
+            <span class="subtitulo">Escolha uma tarefa para iniciar</span>
         </div>
-        <button class="botaoIniciarCiclo" ng-click="iniciarCiclo()"><i class="bi bi-play-fill"></i></button>
+
+        <ul class="timerLista list-unstyled mb-0">
+            <li class="itemLista timerItem d-flex justify-content-between align-items-center px-4"
+                ng-repeat="tarefa in listaDeTarefas"
+                ng-click="selecionarTarefa(tarefa)"
+                ng-class="{ 'timerItemSelecionado': tarefa === tarefaSelecionada }">
+                <span class="d-flex align-items-center">
+                    <span class="marcadorCor" ng-style="{ 'background-color': tarefa.cor }"></span>
+                    <span class="d-flex flex-column">
+                        <span class="nomeDaTarefa">{{ tarefa.nomeDaTarefa }}</span>
+                    </span>
+                </span>
+                <i class="bi bi-check-circle-fill timerIconeSelecionado" ng-show="tarefa === tarefaSelecionada"></i>
+            </li>
+            <li class="mensagemVazia" ng-show="tarefasCarregadas && listaDeTarefas.length === 0">Nenhuma tarefa ativa. Crie uma em Tarefas.</li>
+        </ul>
+    </div>
+
+    @await Html.PartialAsync("_Cronometro")
+
+    <div class="timerRodape d-flex align-items-center justify-content-between px-4 py-3" ng-show="telaAtual === 'lista' && tarefaSelecionada">
+        <span class="d-flex align-items-center">
+            <span class="marcadorCor" ng-style="{ 'background-color': tarefaSelecionada.cor }"></span>
+            <span class="d-flex flex-column">
+                <span class="nomeDaTarefa">{{ tarefaSelecionada.nomeDaTarefa }}</span>
+                <span class="subtitulo">Foco {{ formatarDuracaoDaTarefa(tarefaSelecionada.duracaoFocoSegundos) }}</span>
+            </span>
+        </span>
+        <button class="botaoPrimario text-nowrap" ng-click="iniciarCiclo()"><i class="bi bi-play-fill me-1"></i></button>
     </div>
 </div>
+
+@section Estilos {
+    <link href="~/css/timer/timer.css" rel="stylesheet" />
+}
 
 @section Scripts {
     <script src="~/js/timer/timerModulo.js"></script>

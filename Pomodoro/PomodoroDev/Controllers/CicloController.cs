@@ -15,7 +15,7 @@ public class CicloController : Controller
     [HttpGet]
     public async Task<JsonResult> PausarOuFocar()
     {
-        var ciclo = _cicloBusiness.MudarDeCiclo();
+        var ciclo = await _cicloBusiness.MudarDeCiclo();
         return new JsonResult(ciclo);
     }
 

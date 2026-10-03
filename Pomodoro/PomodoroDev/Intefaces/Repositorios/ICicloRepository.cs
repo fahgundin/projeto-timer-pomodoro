@@ -5,8 +5,7 @@ public interface ICicloRepository
 {
     Task<List<Ciclo>> ObterCiclosConcluidosDeUmaTarefa(int tarefaId);
     
-    Task<Ciclo> ObterCicloAtual();
-    
+    Task<Ciclo?> ObterCicloAtual();    
     Task DefinirCicloComoConcluido(int cicloId);
     
     Task CriarCiclo(Ciclo ciclo);

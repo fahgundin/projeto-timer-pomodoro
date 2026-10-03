@@ -2,44 +2,52 @@
 using WebApplication1.Context;
 using WebApplication1.Entities;
 using WebApplication1.Intefaces.Repositorios;
-using WebApplication1.ViewModels;
 
 namespace WebApplication1.Repositories;
 
 public class CicloRepository(PomodoroDbContext contexto) : ICicloRepository
 {
-    public Task<List<Ciclo>> ObterCiclosConcluidosDeUmaTarefa(int tarefaId)
+    private const int tipoFoco = 0;
+    private const int tipoPausaLonga = 1;
+
+    public async Task<List<Ciclo>> ObterCiclosConcluidosDeUmaTarefa(int tarefaId)
     {
-        // TODO: TEM QUE SER EXECUTADO POR UMA PROCEDURE
-        throw new NotImplementedException();
+        return await contexto.Ciclos
+            .AsNoTracking()
+            .Where(c => c.TarefaId == tarefaId && c.Concluido)
+            .OrderBy(c => c.DataHoraInicio)
+            .ToListAsync();
     }
 
-    public Task<Ciclo?> ObterCicloAtual()
+    public async Task<Ciclo?> ObterCicloAtual()
     {
-        // TODO: TAMBEM TEM QUE SER EXECUTADO POR UMA PROCEDURE
-        throw new NotImplementedException();
+        return await contexto.Ciclos
+            .Include(c => c.Tarefa)
+            .Where(c => c.DataHoraFim == null)
+            .OrderByDescending(c => c.DataHoraInicio)
+            .FirstOrDefaultAsync();
     }
 
-    public Task<int> ConsultarQuantidadeDeFocosConcluidosDesdeAUltimaPausaLonga(int tarefaId)
+    public async Task<int> ConsultarQuantidadeDeFocosConcluidosDesdeAUltimaPausaLonga(int tarefaId)
     {
-        // TODO: TAMBEM TEM QUE SER EXECUTADO POR UMA PROCEDURE
-        //
-        // var ciclosDaTarefa = _cicloRepository.ObterCiclosConcluidosDeUmaTarefa(cicloASerPausado.TarefaId);
-        //
-        // var ultimaPausaLonga = ciclosDaTarefa
-        //     .Where(c => c.TipoDoCiclo == TiposDeCiclo.PausaLonga)
-        //     .OrderByDescending(c => c.DataHoraInicio)
-        //     .FirstOrDefault();
-        //
-        // var focosConcluidos = ConsultarFocosConcluidosDesdeAUltimaPausaLonga(ciclosDaTarefa, ultimaPausaLonga);
-        throw new NotImplementedException();
+        DateTimeOffset? inicioDaUltimaPausaLonga = await contexto.Ciclos
+            .Where(c => c.TarefaId == tarefaId && c.TipoDoCiclo == tipoPausaLonga && c.Concluido)
+            .OrderByDescending(c => c.DataHoraInicio)
+            .Select(c => c.DataHoraInicio)
+            .FirstOrDefaultAsync();
+
+        return await contexto.Ciclos.CountAsync(c =>
+            c.TarefaId == tarefaId &&
+            c.TipoDoCiclo == tipoFoco &&
+            c.Concluido &&
+            (inicioDaUltimaPausaLonga == null || c.DataHoraInicio > inicioDaUltimaPausaLonga));
     }
 
     public async Task DefinirCicloComoConcluido(int cicloId)
     {
         var linhasAfetadas = await contexto.Ciclos
             .Where(c => c.CicloId == cicloId)
-            .ExecuteUpdateAsync(s => 
+            .ExecuteUpdateAsync(s =>
                 s.SetProperty(c => c.Concluido, true));
 
         if (linhasAfetadas == 0)
@@ -52,16 +60,25 @@ public class CicloRepository(PomodoroDbContext contexto) : ICicloRepository
 
     public async Task CriarCiclo(Ciclo ciclo)
     {
+        var tarefa = await contexto.Tarefas
+            .AsNoTracking()
+            .FirstAsync(t => t.TarefaId == ciclo.TarefaId);
+
+        ciclo.DuracaoPlanejadaSegundos = ciclo.TipoDoCiclo switch
+        {
+            tipoFoco => tarefa.DuracaoFocoSegundos,
+            tipoPausaLonga => tarefa.DuracaoPausaLonga,
+            _ => tarefa.DuracaoPausaCurta
+        };
+
         await contexto.Ciclos.AddAsync(ciclo);
         await contexto.SaveChangesAsync();
     }
-    
+
     public async Task<Ciclo> FinalizarCiclo(Ciclo ciclo)
     {
         ciclo.DataHoraFim = DateTimeOffset.UtcNow;
         await contexto.SaveChangesAsync();
         return ciclo;
     }
-
-  
 }

@@ -10,6 +10,8 @@ public interface ITarefaBusiness
     Task AtualizarTarefa(TarefaViewModel tarefa);
 
     Task ArquivarTarefa(int tarefaId);
-    
+
+    Task ExcluirTarefa(int tarefaId);
+
     void CriarTarefa(TarefaViewModel tarefa);
 }
