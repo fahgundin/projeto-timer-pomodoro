@@ -1,0 +1,120 @@
+﻿@{
+    ViewData["Title"] = "Tarefas";
+}
+<div id="paginaTarefas" ng-app="appTarefa" ng-controller="ControladorTarefa">
+
+    <div class="tarefaMenuFundo" ng-show="menuAbertoId !== null" ng-click="fecharMenu()"></div>
+
+    <div class="tarefaMensagemErro px-4 pt-2" ng-show="mensagemDeErro">{{ mensagemDeErro }}</div>
+
+    <div ng-show="telaAtual === 'lista'">
+        <div class="cabecalhoPagina d-flex justify-content-between align-items-center px-4 py-3">
+            <h1 class="tituloPagina mb-0">Gerenciar tarefas</h1>
+            <button class="tarefaBotaoNova d-flex align-items-center" ng-click="novaTarefa()">
+                <i class="bi bi-plus-lg me-1"></i><span>Nova tarefa</span>
+            </button>
+        </div>
+
+        <div class="tarefaAbas d-flex px-3 py-2">
+            <button class="tarefaAba" ng-class="{ 'tarefaAbaAtiva': abaAtual === 'ativas' }" ng-click="trocarAba('ativas')">Ativas</button>
+            <button class="tarefaAba" ng-class="{ 'tarefaAbaAtiva': abaAtual === 'arquivadas' }" ng-click="trocarAba('arquivadas')">Arquivadas</button>
+        </div>
+
+        <ul class="list-unstyled mb-0">
+            <li class="itemLista d-flex justify-content-between align-items-center px-4"
+                ng-repeat="tarefa in listaDeTarefas | filter: correspondeAAba">
+                <span class="d-flex align-items-center">
+                    <span class="marcadorCor"
+                          ng-class="{ 'tarefaMarcadorArquivada': tarefa.arquivado }"
+                          ng-style="{ 'background-color': tarefa.cor }"></span>
+                    <span class="d-flex flex-column">
+                        <span class="nomeDaTarefa" ng-class="{ 'tarefaNomeArquivada': tarefa.arquivado }">{{ tarefa.nomeDaTarefa }}</span>
+                        <span class="subtitulo" ng-show="tarefa.arquivado">Arquivada</span>
+                        <span class="subtitulo" ng-show="!tarefa.arquivado && possuiDataDeCriacao(tarefa)">Criada em {{ tarefa.dataHoraInicio | date:'dd/MM/yyyy' }}</span>
+                    </span>
+                </span>
+                <span class="tarefaMenu">
+                    <button type="button" class="tarefaMenuBotao" ng-click="alternarMenu(tarefa)">
+                        <i class="bi bi-three-dots-vertical"></i>
+                    </button>
+                    <ul class="tarefaMenuLista list-unstyled mb-0" ng-show="menuAbertoId === tarefa.tarefaId">
+                        <li ng-show="!tarefa.arquivado">
+                            <button type="button" class="tarefaMenuItem" ng-click="iniciarEdicao(tarefa)"><i class="bi bi-pencil-square me-2"></i>Editar</button>
+                        </li>
+                        <li ng-show="!tarefa.arquivado">
+                            <button type="button" class="tarefaMenuItem" ng-click="arquivarTarefa(tarefa)"><i class="bi bi-archive-fill me-2"></i>Arquivar</button>
+                        </li>
+                        <li ng-show="tarefa.arquivado">
+                            <button type="button" class="tarefaMenuItem" ng-click="desarquivarTarefa(tarefa)"><i class="bi bi-box-arrow-up me-2"></i>Desarquivar</button>
+                        </li>
+                        <li>
+                            <button type="button" class="tarefaMenuItem tarefaMenuItemPerigo" ng-click="excluirTarefa(tarefa)"><i class="bi bi-trash3-fill me-2"></i>Excluir</button>
+                        </li>
+                    </ul>
+                </span>
+            </li>
+            <li class="mensagemVazia" ng-show="(listaDeTarefas | filter: correspondeAAba).length === 0">
+                {{ abaAtual === 'ativas' ? 'Nenhuma tarefa ativa.' : 'Nenhuma tarefa arquivada.' }}
+            </li>
+        </ul>
+    </div>
+
+    <div class="px-4 py-3" ng-show="telaAtual === 'formulario'">
+        <div class="d-flex align-items-center mb-4">
+            <button type="button" class="botaoVoltar me-3" ng-click="voltarParaLista()"><i class="bi bi-arrow-left"></i></button>
+            <h1 class="tituloPagina mb-0">{{ tarefaEmEdicao ? 'Editar tarefa' : 'Nova tarefa' }}</h1>
+        </div>
+
+        <form name="formularioDaTarefa" class="tarefaFormulario" novalidate ng-submit="salvarTarefa(formularioDaTarefa)">
+            <div class="mb-3">
+                <label class="tarefaRotulo" for="campoNome">Nome da tarefa</label>
+                <input id="campoNome" name="nomeDaTarefa" type="text" class="form-control tarefaCampo" maxlength="100" required
+                       placeholder="Ex: Estudar Banco de Dados" ng-model="formulario.nomeDaTarefa">
+            </div>
+            <div class="mb-3">
+                <label class="tarefaRotulo" for="campoFoco">Duração do foco (minutos)</label>
+                <input id="campoFoco" name="duracaoFoco" type="number" class="form-control tarefaCampo" min="1" max="180" required
+                       ng-model="formulario.duracaoFocoMinutos">
+            </div>
+            <div class="mb-3">
+                <label class="tarefaRotulo" for="campoPausaCurta">Duração da pausa curta (minutos)</label>
+                <input id="campoPausaCurta" name="duracaoPausaCurta" type="number" class="form-control tarefaCampo" min="1" max="60" required
+                       ng-model="formulario.duracaoPausaCurtaMinutos">
+            </div>
+            <div class="mb-3">
+                <label class="tarefaRotulo" for="campoPausaLonga">Duração da pausa longa (minutos)</label>
+                <input id="campoPausaLonga" name="duracaoPausaLonga" type="number" class="form-control tarefaCampo" min="1" max="120" required
+                       ng-model="formulario.duracaoPausaLongaMinutos">
+            </div>
+            <div class="mb-3">
+                <label class="tarefaRotulo" for="campoCiclos">Ciclos até a pausa longa</label>
+                <input id="campoCiclos" name="ciclosParaPausaLonga" type="number" class="form-control tarefaCampo" min="1" max="10" required
+                       ng-model="formulario.ciclosParaPausaLonga">
+            </div>
+            <div class="mb-3">
+                <label class="tarefaRotulo">Cor de destaque</label>
+                <div class="d-flex tarefaOpcoesCor">
+                    <button type="button" class="tarefaOpcaoCor"
+                            ng-repeat="cor in coresDisponiveis"
+                            ng-class="{ 'tarefaOpcaoCorSelecionada': formulario.cor === cor }"
+                            ng-style="{ 'background-color': cor }"
+                            ng-click="formulario.cor = cor"></button>
+                </div>
+            </div>
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="botaoPrimario botaoExpandido" ng-disabled="formularioDaTarefa.$invalid || salvando">Salvar</button>
+                <button type="button" class="botaoSecundario botaoExpandido" ng-click="voltarParaLista()">Cancelar</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+@section Estilos {
+    <link href="~/css/tarefa/tarefa.css" rel="stylesheet" />
+}
+
+@section Scripts {
+    <script src="~/js/tarefa/tarefaModulo.js"></script>
+    <script src="~/js/tarefa/tarefaControlador.js"></script>
+}

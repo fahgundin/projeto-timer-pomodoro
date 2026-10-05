@@ -11,15 +11,27 @@
     border-right: 1px solid #2f3136;
 }
 
-.iconeMenu {
+.iconeMenu,
+.iconeMenu:link,
+.iconeMenu:visited,
+.iconeMenu:focus,
+.iconeMenu:active {
     color: #8a8d91;
     font-size: 1.2rem;
     text-decoration: none;
     cursor: pointer;
 }
 
-.iconeMenu:hover {
-    color: #ffffff;
+@media (hover: hover) {
+    .iconeMenu:hover {
+        color: #a78bfa;
+    }
+}
+
+.iconeMenu:focus-visible {
+    outline: 2px solid #3b6ef6;
+    outline-offset: 2px;
+    border-radius: 6px;
 }
 
 .conteudoPrincipal {
@@ -48,10 +60,9 @@
 }
 
 .marcadorCor {
+    flex: 0 0 14px;
     width: 14px;
-    min-width: 10px;
-    aspect-ratio: 1 / 1;
-    height: auto;
+    height: 14px;
     border-radius: 50%;
     background-color: #2ecc71;
     display: inline-block;

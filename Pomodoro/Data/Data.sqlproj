@@ -19,7 +19,6 @@
     <Folder Include="Triggers\" />
     <Folder Include="Types\" />
     <Folder Include="Views\" />
-    <Folder Include="Migrations\" />
     <Folder Include="Tables\" />
     <Folder Include="Setup\" />
   </ItemGroup>
@@ -29,6 +28,7 @@
   <ItemGroup>
     <Build Remove="Tables\Ciclos.sql" />
     <None Include="Migrations\003_AdicaoDeCorNaTabelaDeTarefa.sql" />
+    <None Include="Migrations\004_AdicaoDeDuracaoPlanejadaNoCiclo.sql" />
     <None Include="Tables\Ciclos.sql" />
     <Build Remove="Tables\Tarefas.sql" />
     <None Include="Tables\Tarefas.sql" />
@@ -42,6 +42,5 @@
     <None Include="Migrations\001_CriacaoTabelaDeTarefa.sql" />
     <Build Remove="Migrations\000_TemplateMigration.sql" />
     <None Include="Migrations\000_TemplateMigration.sql" />
-    <None Include="Migrations\004_AdicaoDeDuracaoPlanejadaNoCiclo.sql" />
   </ItemGroup>
 </Project>
