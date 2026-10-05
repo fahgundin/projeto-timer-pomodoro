@@ -98,18 +98,10 @@ angular.module('appTimer').controller('ControladorTimer', function($scope, $http
     }
 
     function avancarProximoCiclo() {
-        if ($scope.tipoDoCicloAtual === 'pausaLonga') {
-            aguardarServidor($http.post('/Ciclo/FinalizarCicloAtual')).then(function() {
-                finalizarCicloCompleto();
-            }, function() {
-                finalizarCicloCompleto();
-                alert('Não foi possível registrar o fim do ciclo');
-            });
-            return;
-        }
 
         aguardarServidor($http.get('/Ciclo/PausarOuFocar')).then(function(resposta) {
             const proximoTipo = tiposDeCicloDoServidor[resposta.data.tipoDoCiclo];
+            console.log(resposta.data)
             if (!proximoTipo) {
                 finalizarCicloCompleto();
                 alert('O servidor devolveu uma fase desconhecida');
@@ -171,6 +163,8 @@ angular.module('appTimer').controller('ControladorTimer', function($scope, $http
         }
 
         const tarefaId = $scope.tarefaSelecionada.tarefaId;
+        
+        
 
         aguardarServidor(
             encerrarCiclosEsquecidosNoServidor().then(function() {
@@ -188,13 +182,17 @@ angular.module('appTimer').controller('ControladorTimer', function($scope, $http
     $scope.alternarPausa = function() {
         if (aguardandoServidor) {
             return;
-        }
-        if ($scope.contagemEmAndamento) {
-            pararCronometroInterno();
-            $scope.estadoCronometro = 'Pausado';
-        } else {
-            iniciarContagem();
-        }
+            }
+        avancarProximoCiclo();
+        // if (aguardandoServidor) {
+        //     return;
+        // }
+        // if ($scope.contagemEmAndamento) {
+        //     pararCronometroInterno();
+        //     $scope.estadoCronometro = 'Pausado';
+        // } else {
+        //     iniciarContagem();
+        // }
     };
 
     $scope.encerrarCiclo = function() {

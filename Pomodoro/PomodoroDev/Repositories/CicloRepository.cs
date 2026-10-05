@@ -12,6 +12,7 @@ public class CicloRepository(PomodoroDbContext contexto) : ICicloRepository
 
     public async Task<List<Ciclo>> ObterCiclosConcluidosDeUmaTarefa(int tarefaId)
     {
+        //TODO TRANSFORMAR EM PROCEDURE
         return await contexto.Ciclos
             .AsNoTracking()
             .Where(c => c.TarefaId == tarefaId && c.Concluido)
@@ -21,6 +22,7 @@ public class CicloRepository(PomodoroDbContext contexto) : ICicloRepository
 
     public async Task<Ciclo?> ObterCicloAtual()
     {
+        //TODO TRANSFORMAR EM PROCEDURE
         return await contexto.Ciclos
             .Include(c => c.Tarefa)
             .Where(c => c.DataHoraFim == null)
@@ -30,6 +32,7 @@ public class CicloRepository(PomodoroDbContext contexto) : ICicloRepository
 
     public async Task<int> ConsultarQuantidadeDeFocosConcluidosDesdeAUltimaPausaLonga(int tarefaId)
     {
+        //TODO TRANSFORMAR EM PROCEDURE
         DateTimeOffset? inicioDaUltimaPausaLonga = await contexto.Ciclos
             .Where(c => c.TarefaId == tarefaId && c.TipoDoCiclo == tipoPausaLonga && c.Concluido)
             .OrderByDescending(c => c.DataHoraInicio)

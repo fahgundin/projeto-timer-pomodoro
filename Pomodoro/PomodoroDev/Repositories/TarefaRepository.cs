@@ -10,6 +10,7 @@ public class TarefaRepository(PomodoroDbContext contexto) : ITarefaRepository
 {
     public async Task<List<Tarefa>> ObterTarefas()
     {
+        //TODO TRANSFORMAR EM PROCEDURE
         return await contexto.Tarefas
             .AsNoTracking()
             .OrderBy(t => t.TarefaId)
@@ -52,6 +53,7 @@ public class TarefaRepository(PomodoroDbContext contexto) : ITarefaRepository
 
     public async Task ExcluirTarefa(int tarefaId)
     {
+        //TODO ESSE MÉTODO NÃO PODE EXISTIR
         await using var transacao = await contexto.Database.BeginTransactionAsync();
 
         await contexto.Ciclos
