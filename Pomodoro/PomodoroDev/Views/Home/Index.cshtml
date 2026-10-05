@@ -2,7 +2,7 @@
     ViewData["Title"] = "Timer";
 }
 <div id="paginaTimer" ng-app="appTimer" ng-controller="ControladorTimer">
-
+    <div class="timerMensagemErro px-4 pt-2" ng-show="mensagemDeErro">{{ mensagemDeErro }}</div>
     <div ng-show="telaAtual === 'lista'">
         <div class="cabecalhoPagina d-flex justify-content-between align-items-center px-4 py-3">
             <h1 class="tituloPagina mb-0">Timer</h1>
@@ -31,12 +31,9 @@
     <div class="timerRodape d-flex align-items-center justify-content-between px-4 py-3" ng-show="telaAtual === 'lista' && tarefaSelecionada">
         <span class="d-flex align-items-center">
             <span class="marcadorCor" ng-style="{ 'background-color': tarefaSelecionada.cor }"></span>
-            <span class="d-flex flex-column">
-                <span class="nomeDaTarefa">{{ tarefaSelecionada.nomeDaTarefa }}</span>
-                <span class="subtitulo">Foco {{ formatarDuracaoDaTarefa(tarefaSelecionada.duracaoFocoSegundos) }}</span>
-            </span>
+            <span class="nomeDaTarefa">{{ tarefaSelecionada.nomeDaTarefa }}</span>
         </span>
-        <button class="botaoPrimario text-nowrap" ng-click="iniciarCiclo()"><i class="bi bi-play-fill me-1"></i></button>
+        <button class="botaoPrimario text-nowrap" ng-click="iniciarCiclo()"><i class="bi bi-play-fill me-1"></i>Iniciar</button>
     </div>
 </div>
 

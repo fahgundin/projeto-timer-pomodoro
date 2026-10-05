@@ -1,6 +1,10 @@
-angular.module('appTimer').controller('ControladorTimer', function($scope, $http) {
+angular.module('appTimer').controller('ControladorTimer', function($scope, $http, $interval, $document) {
 
     const deslocamentoMinimoCirculo = 8;
+    const intervaloDaContagemMs = 250;
+    const chaveDeSessao = 'timerEmAndamento';
+    const rotaParaInterromperCiclo = '/Ciclo/FinalizarCicloAtual';
+    const tituloOriginal = $document[0].title;
 
     const tiposDeCicloDoServidor = {
         0: 'foco',
@@ -12,6 +16,8 @@ angular.module('appTimer').controller('ControladorTimer', function($scope, $http
     $scope.tarefasCarregadas = false;
     $scope.tarefaSelecionada = null;
     $scope.telaAtual = 'lista';
+    $scope.mensagemDeErro = '';
+    $scope.aguardandoServidor = false;
 
     $scope.tipoDoCicloAtual = 'foco';
     $scope.contagemEmAndamento = false;
@@ -22,33 +28,52 @@ angular.module('appTimer').controller('ControladorTimer', function($scope, $http
     $scope.deslocamentoMinimoCirculo = deslocamentoMinimoCirculo;
 
     let cronometroInterno = null;
-    let aguardandoServidor = false;
+    let fimPrevistoMs = 0;
+    let segundosAoPausar = 0;
+
+    function lerMarcaDeSessao() {
+        try { return sessionStorage.getItem(chaveDeSessao) === 'sim'; } catch (e) { return false; }
+    }
+
+    function gravarMarcaDeSessao() {
+        try { sessionStorage.setItem(chaveDeSessao, 'sim'); } catch (e) {}
+    }
+
+    function limparMarcaDeSessao() {
+        try { sessionStorage.removeItem(chaveDeSessao); } catch (e) {}
+    }
+
+    const retomarAoCarregar = lerMarcaDeSessao();
+
+    $scope.$watch('telaAtual', function(novaTela, telaAnterior) {
+        if (novaTela === telaAnterior) { return; }
+        if (novaTela === 'cronometro') {
+            gravarMarcaDeSessao();
+        } else {
+            limparMarcaDeSessao();
+            $document[0].title = tituloOriginal;
+        }
+    });
+
+    function mostrarErro(texto) {
+        $scope.mensagemDeErro = texto;
+    }
 
     function aguardarServidor(requisicao) {
-        aguardandoServidor = true;
+        $scope.aguardandoServidor = true;
         return requisicao.finally(function() {
-            aguardandoServidor = false;
+            $scope.aguardandoServidor = false;
         });
     }
 
-    function carregarTarefasDoServidor() {
-        $http.get('/Tarefa/ListarTarefas').then(function(resposta) {
-            $scope.listaDeTarefas = resposta.data.filter(function(tarefa) {
-                return !tarefa.arquivado;
-            });
-            $scope.tarefasCarregadas = true;
-        }, function() {
-            alert('Não foi possível carregar as tarefas');
-        });
+    function converterDataDoServidor(texto) {
+        return Date.parse(texto.replace(/(\.\d{3})\d+/, '$1'));
     }
 
-    function encerrarCiclosEsquecidosNoServidor() {
-        return $http.get('/Ciclo/ObterCicloAtual').then(function(resposta) {
-            if (!resposta.data) {
-                return;
-            }
-            return $http.post('/Ciclo/FinalizarCicloAtual').then(encerrarCiclosEsquecidosNoServidor);
-        });
+    function formatarSegundosEmContagem(segundos) {
+        const minutos = Math.floor(segundos / 60).toString().padStart(2, '0');
+        const segundosResto = (segundos % 60).toString().padStart(2, '0');
+        return minutos + ':' + segundosResto;
     }
 
     $scope.formatarDuracaoDaTarefa = function(segundos) {
@@ -56,12 +81,6 @@ angular.module('appTimer').controller('ControladorTimer', function($scope, $http
         if (segundos % 60 === 0) { return (segundos / 60) + 'min'; }
         return segundos + 's';
     };
-
-    function formatarSegundosEmContagem(segundos) {
-        const minutos = Math.floor(segundos / 60).toString().padStart(2, '0');
-        const segundosResto = (segundos % 60).toString().padStart(2, '0');
-        return minutos + ':' + segundosResto;
-    }
 
     function duracaoDoTipo(tipo) {
         if (tipo === 'foco') { return $scope.tarefaSelecionada.duracaoFocoSegundos; }
@@ -75,18 +94,35 @@ angular.module('appTimer').controller('ControladorTimer', function($scope, $http
         return 'Pausa longa';
     }
 
-    function prepararCiclo(tipo) {
-        const duracaoDesteCiclo = duracaoDoTipo(tipo);
-        $scope.tipoDoCicloAtual = tipo;
-        $scope.segundosTotaisDoCiclo = duracaoDesteCiclo;
-        $scope.segundosRestantes = duracaoDesteCiclo;
+    function atualizarTituloDaAba() {
+        if ($scope.telaAtual === 'cronometro') {
+            $document[0].title = $scope.tempoFormatado + ' - ' + $scope.estadoCronometro;
+        }
+    }
+
+    function atualizarContagemNaTela() {
+        $scope.segundosRestantes = Math.max(0, Math.ceil((fimPrevistoMs - Date.now()) / 1000));
         $scope.tempoFormatado = formatarSegundosEmContagem($scope.segundosRestantes);
+        atualizarTituloDaAba();
+    }
+
+    function aplicarCiclo(ciclo, inicioMs) {
+        const tipo = tiposDeCicloDoServidor[ciclo.tipoDoCiclo];
+        if (!tipo) {
+            return false;
+        }
+        const duracao = ciclo.duracaoPlanejadaSegundos || duracaoDoTipo(tipo);
+        fimPrevistoMs = inicioMs + duracao * 1000;
+        $scope.tipoDoCicloAtual = tipo;
+        $scope.segundosTotaisDoCiclo = duracao;
         $scope.estadoCronometro = textoDoTipo(tipo);
+        atualizarContagemNaTela();
+        return true;
     }
 
     function pararCronometroInterno() {
         if (cronometroInterno !== null) {
-            clearInterval(cronometroInterno);
+            $interval.cancel(cronometroInterno);
             cronometroInterno = null;
         }
         $scope.contagemEmAndamento = false;
@@ -97,22 +133,12 @@ angular.module('appTimer').controller('ControladorTimer', function($scope, $http
         $scope.telaAtual = 'lista';
     }
 
-    function avancarProximoCiclo() {
-
-        aguardarServidor($http.get('/Ciclo/PausarOuFocar')).then(function(resposta) {
-            const proximoTipo = tiposDeCicloDoServidor[resposta.data.tipoDoCiclo];
-            console.log(resposta.data)
-            if (!proximoTipo) {
-                finalizarCicloCompleto();
-                alert('O servidor devolveu uma fase desconhecida');
-                return;
-            }
-            prepararCiclo(proximoTipo);
-            iniciarContagem();
-        }, function() {
-            finalizarCicloCompleto();
-            alert('Não foi possível registrar a troca de fase');
-        });
+    function contarTempo() {
+        atualizarContagemNaTela();
+        if ($scope.segundosRestantes <= 0) {
+            pararCronometroInterno();
+            avancarProximoCiclo();
+        }
     }
 
     function iniciarContagem() {
@@ -121,29 +147,113 @@ angular.module('appTimer').controller('ControladorTimer', function($scope, $http
         }
         $scope.contagemEmAndamento = true;
         $scope.estadoCronometro = textoDoTipo($scope.tipoDoCicloAtual);
+        cronometroInterno = $interval(contarTempo, intervaloDaContagemMs);
+    }
 
-        cronometroInterno = setInterval(function() {
-            $scope.segundosRestantes--;
-            $scope.tempoFormatado = formatarSegundosEmContagem($scope.segundosRestantes);
+    function avancarProximoCiclo() {
+        if ($scope.aguardandoServidor) {
+            return;
+        }
 
-            if ($scope.segundosRestantes <= 0) {
-                pararCronometroInterno();
-                $scope.$apply(avancarProximoCiclo);
-            } else {
-                $scope.$apply();
+        if ($scope.tipoDoCicloAtual === 'pausaLonga') {
+            aguardarServidor($http.post('/Ciclo/FinalizarCicloAtual')).then(function() {
+                finalizarCicloCompleto();
+            }, function() {
+                finalizarCicloCompleto();
+                mostrarErro('Não foi possível registrar o fim do ciclo');
+            });
+            return;
+        }
+
+        aguardarServidor($http.get('/Ciclo/PausarOuFocar')).then(function(resposta) {
+            if (!aplicarCiclo(resposta.data, Date.now())) {
+                finalizarCicloCompleto();
+                mostrarErro('O servidor devolveu uma fase desconhecida');
+                return;
             }
-        }, 1000);
+            iniciarContagem();
+        }, function() {
+            finalizarCicloCompleto();
+            mostrarErro('Não foi possível registrar a troca de fase');
+        });
     }
 
     function finalizarCicloAbertoNoServidor() {
         pararCronometroInterno();
-        aguardarServidor($http.post('/Ciclo/FinalizarCicloAtual')).then(function() {
+        aguardarServidor($http.post(rotaParaInterromperCiclo)).then(function() {
             $scope.telaAtual = 'lista';
         }, function() {
             $scope.telaAtual = 'lista';
-            alert('Não foi possível encerrar o ciclo no servidor');
+            mostrarErro('Não foi possível encerrar o ciclo no servidor');
         });
     }
+
+    function encerrarCiclosEsquecidosNoServidor() {
+        return $http.get('/Ciclo/ObterCicloAtual').then(function(resposta) {
+            if (!resposta.data) {
+                return;
+            }
+            return $http.post(rotaParaInterromperCiclo).then(encerrarCiclosEsquecidosNoServidor);
+        });
+    }
+
+    function carregarTarefasDoServidor() {
+        return $http.get('/Tarefa/ListarTarefas').then(function(resposta) {
+            $scope.listaDeTarefas = resposta.data.filter(function(tarefa) {
+                return !tarefa.arquivado;
+            });
+            $scope.tarefasCarregadas = true;
+        }, function() {
+            mostrarErro('Não foi possível carregar as tarefas');
+        });
+    }
+
+    function retomarCicloEmAndamento() {
+        return $http.get('/Ciclo/ObterCicloAtual').then(function(resposta) {
+            const ciclo = resposta.data;
+            if (!ciclo) {
+                limparMarcaDeSessao();
+                return;
+            }
+
+            const tarefaDoCiclo = $scope.listaDeTarefas.find(function(tarefa) {
+                return tarefa.tarefaId === ciclo.tarefaId;
+            }) || ciclo.tarefa;
+
+            if (!tarefaDoCiclo) {
+                return;
+            }
+
+            $scope.tarefaSelecionada = tarefaDoCiclo;
+
+            if (!aplicarCiclo(ciclo, converterDataDoServidor(ciclo.dataHoraInicio))) {
+                return;
+            }
+
+            $scope.telaAtual = 'cronometro';
+
+            if ($scope.segundosRestantes <= 0) {
+                avancarProximoCiclo();
+            } else {
+                iniciarContagem();
+            }
+        }, function() {
+            mostrarErro('Não foi possível verificar o ciclo em andamento');
+        });
+    }
+
+    function aoVoltarParaAba() {
+        if (!$document[0].hidden && $scope.contagemEmAndamento) {
+            $scope.$evalAsync(contarTempo);
+        }
+    }
+
+    $document.on('visibilitychange', aoVoltarParaAba);
+
+    $scope.$on('$destroy', function() {
+        $document.off('visibilitychange', aoVoltarParaAba);
+        pararCronometroInterno();
+    });
 
     $scope.selecionarTarefa = function(tarefa) {
         if ($scope.tarefaSelecionada === tarefa) {
@@ -154,61 +264,62 @@ angular.module('appTimer').controller('ControladorTimer', function($scope, $http
     };
 
     $scope.iniciarCiclo = function() {
-        if (!$scope.tarefaSelecionada) {
-            alert('Selecione uma tarefa antes de iniciar');
-            return;
-        }
-        if (aguardandoServidor) {
+        if (!$scope.tarefaSelecionada || $scope.aguardandoServidor) {
             return;
         }
 
+        $scope.mensagemDeErro = '';
         const tarefaId = $scope.tarefaSelecionada.tarefaId;
-        
-        
 
         aguardarServidor(
             encerrarCiclosEsquecidosNoServidor().then(function() {
                 return $http.post('/Ciclo/IniciarCiclo', null, { params: { tarefaId: tarefaId } });
             })
-        ).then(function() {
+        ).then(function(resposta) {
+            if (!aplicarCiclo(resposta.data, Date.now())) {
+                mostrarErro('O servidor devolveu uma fase desconhecida');
+                return;
+            }
             $scope.telaAtual = 'cronometro';
-            prepararCiclo('foco');
             iniciarContagem();
         }, function() {
-            alert('Não foi possível iniciar o ciclo');
+            mostrarErro('Não foi possível iniciar o ciclo');
         });
     };
 
     $scope.alternarPausa = function() {
-        if (aguardandoServidor) {
+        if ($scope.aguardandoServidor) {
             return;
-            }
-        avancarProximoCiclo();
-        // if (aguardandoServidor) {
-        //     return;
-        // }
-        // if ($scope.contagemEmAndamento) {
-        //     pararCronometroInterno();
-        //     $scope.estadoCronometro = 'Pausado';
-        // } else {
-        //     iniciarContagem();
-        // }
+        }
+        if ($scope.contagemEmAndamento) {
+            pararCronometroInterno();
+            segundosAoPausar = $scope.segundosRestantes;
+            $scope.estadoCronometro = 'Pausado';
+        } else {
+            fimPrevistoMs = Date.now() + segundosAoPausar * 1000;
+            iniciarContagem();
+        }
+        atualizarTituloDaAba();
     };
 
     $scope.encerrarCiclo = function() {
-        if (aguardandoServidor) {
+        if ($scope.aguardandoServidor) {
             return;
         }
         finalizarCicloAbertoNoServidor();
     };
 
     $scope.cancelarCiclo = function() {
-        if (aguardandoServidor) {
+        if ($scope.aguardandoServidor) {
             return;
         }
         finalizarCicloAbertoNoServidor();
     };
 
-    carregarTarefasDoServidor();
+    carregarTarefasDoServidor().then(function() {
+        if (retomarAoCarregar) {
+            return retomarCicloEmAndamento();
+        }
+    });
 
 });

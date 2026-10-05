@@ -1,0 +1,95 @@
+﻿.timerLista {
+    padding-bottom: 90px;
+}
+
+.timerItem {
+    cursor: pointer;
+}
+
+.timerItem:hover {
+    background-color: #24272b;
+}
+
+.timerItemSelecionado {
+    background-color: #24272b;
+    box-shadow: inset 3px 0 0 #3b6ef6;
+}
+
+.timerIconeSelecionado {
+    color: #3b6ef6;
+    font-size: 1.1rem;
+}
+
+.timerRodape {
+    position: fixed;
+    bottom: 0;
+    left: 56px;
+    right: 0;
+    background-color: #202225;
+    border-top: 1px solid #2f3136;
+    z-index: 10;
+}
+
+.timerAcoes {
+    width: 100%;
+    max-width: 420px;
+    margin-top: 2rem;
+    gap: 0.75rem;
+}
+
+.timerAcoesSecundarias {
+    gap: 0.75rem;
+}
+
+.timerCirculo {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    margin-top: 0.5rem;
+}
+
+.timerCirculoSvg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.timerCirculoFundo {
+    fill: none;
+    stroke: #2a2d31;
+    stroke-width: 10;
+}
+
+.timerCirculoProgresso {
+    fill: none;
+    stroke: #3b6ef6;
+    stroke-width: 10;
+    stroke-dasharray: 628.32;
+    stroke-dashoffset: 0;
+}
+
+.timerCirculoConteudo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.timerTempo {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.timerEstado {
+    font-size: 0.85rem;
+    color: #8a8d91;
+}
+
+.timerMensagemErro {
+    color: #e74c3c;
+    font-size: 0.8rem;
+}
