@@ -16,7 +16,7 @@
             </div>
         </div>
         <div class="timerAcoes d-flex flex-column">
-            <button class="botaoPrimario w-100" ng-click="alternarPausa()">{{ contagemEmAndamento ? 'Pausar' : 'Continuar' }}</button>
+            <button class="botaoPrimario w-100" ng-click="alternarPausa()">{{ tipoDoCicloAtual === 'foco' ? 'Pausar' : 'Focar' }}</button>
             <div class="timerAcoesSecundarias d-flex">
                 <button class="botaoSecundario botaoExpandido" ng-click="encerrarCiclo()">Fim</button>
                 <button class="botaoSecundario botaoExpandido" ng-click="cancelarCiclo()">Cancelar</button>
