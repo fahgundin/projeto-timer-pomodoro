@@ -291,14 +291,7 @@ angular.module('appTimer').controller('ControladorTimer', function($scope, $http
         if ($scope.aguardandoServidor) {
             return;
         }
-        if ($scope.contagemEmAndamento) {
-            pararCronometroInterno();
-            segundosAoPausar = $scope.segundosRestantes;
-            $scope.estadoCronometro = 'Pausado';
-        } else {
-            fimPrevistoMs = Date.now() + segundosAoPausar * 1000;
-            iniciarContagem();
-        }
+        avancarProximoCiclo();
         atualizarTituloDaAba();
     };
 
