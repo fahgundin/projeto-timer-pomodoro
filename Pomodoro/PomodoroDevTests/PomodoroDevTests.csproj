@@ -20,14 +20,4 @@
         <Using Include="NUnit.Framework"/>
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Apoio\Construtores\" />
-      <Folder Include="Apoio\Falsos\" />
-      <Folder Include="Integracao\Configuracoes\" />
-      <Folder Include="Integracao\Relatorio\" />
-      <Folder Include="Unitarios\Ciclos\" />
-      <Folder Include="Unitarios\Configuracoes\" />
-      <Folder Include="Unitarios\Relatorio\" />
-    </ItemGroup>
-
 </Project>
