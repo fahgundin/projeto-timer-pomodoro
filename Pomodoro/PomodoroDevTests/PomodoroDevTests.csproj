@@ -20,4 +20,8 @@
         <Using Include="NUnit.Framework"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\PomodoroDev\PomodoroDev.csproj" />
+    </ItemGroup>
+
 </Project>
