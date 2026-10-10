@@ -14,6 +14,12 @@ public static class InjetorDeDepencencias
         services.AddScoped<ITarefaBusiness, TarefaBusiness>();
         services.AddScoped<ICicloBusiness, CicloBusiness>();
 
+        services.AddScoped<IRelatorioRepository, RelatorioRepository>();
+        services.AddScoped<IRelatorioBusiness, RelatorioBusiness>();
+        
+        services.AddScoped<IConfiguracaoRepository, ConfiguracaoRepository>();
+        services.AddScoped<IConfiguracaoBusiness, ConfiguracaoBusiness>();
+        
         return services;
     }
 }

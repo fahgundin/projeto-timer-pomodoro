@@ -29,6 +29,7 @@
     <Build Remove="Tables\Ciclos.sql" />
     <None Include="Migrations\003_AdicaoDeCorNaTabelaDeTarefa.sql" />
     <None Include="Migrations\004_AdicaoDeDuracaoPlanejadaNoCiclo.sql" />
+    <None Include="Migrations\006_CriacaoDaTabelaDeConfiguracoes.sql" />
     <None Include="Tables\Ciclos.sql" />
     <Build Remove="Tables\Tarefas.sql" />
     <None Include="Tables\Tarefas.sql" />

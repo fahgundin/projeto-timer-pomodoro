@@ -17,6 +17,8 @@ public partial class PomodoroDbContext : DbContext
     public virtual DbSet<HistoricoMigraco> HistoricoMigracoes { get; set; }
 
     public virtual DbSet<Tarefa> Tarefas { get; set; }
+    
+    public virtual DbSet<Configuracao> Configuracoes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
