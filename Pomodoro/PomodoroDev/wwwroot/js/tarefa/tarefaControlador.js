@@ -6,9 +6,10 @@
 
     const formularioInicial = {
         nomeDaTarefa: '',
-        duracaoFocoMinutos: 25,
-        duracaoPausaCurtaMinutos: 5,
-        duracaoPausaLongaMinutos: 15,
+        personalizado: false,
+        duracaoFocoSegundos: 25,
+        duracaoPausaCurtaSegundos: 5,
+        duracaoPausaLongaSegundos: 15,
         ciclosParaPausaLonga: 4,
         cor: $scope.coresDisponiveis[0]
     };
@@ -34,12 +35,34 @@
         });
     }
 
+    function preencherFormulario(tarefa) {
+        $scope.formulario = {
+            nomeDaTarefa: tarefa.nomeDaTarefa,
+            personalizado: tarefa.personalizado === true,
+            duracaoFocoSegundos: tarefa.duracaoFocoSegundos,
+            duracaoPausaCurtaSegundos: tarefa.duracaoPausaCurta,
+            duracaoPausaLongaSegundos: tarefa.duracaoPausaLonga,
+            ciclosParaPausaLonga: tarefa.ciclosParaPausaLonga,
+            cor: tarefa.cor
+        };
+    }
+
+    function obterTarefa(id) {
+        $http.post('/Tarefa/ObterTarefa', null, { params: { tarefaId: id } }).then(function(resposta) {
+            $scope.tarefaEmEdicao = resposta.data;
+            preencherFormulario(resposta.data);
+        }, function() {
+            $scope.mensagemDeErro = 'Não foi possível carregar tarefa';
+        });
+    }
+
     function montarDadosDoFormulario() {
         return {
             nomeDaTarefa: $scope.formulario.nomeDaTarefa.trim(),
-            duracaoFocoSegundos: $scope.formulario.duracaoFocoMinutos * segundosPorMinuto,
-            duracaoPausaCurta: $scope.formulario.duracaoPausaCurtaMinutos * segundosPorMinuto,
-            duracaoPausaLonga: $scope.formulario.duracaoPausaLongaMinutos * segundosPorMinuto,
+            personalizado: $scope.formulario.personalizado,
+            duracaoFocoSegundos: $scope.formulario.duracaoFocoSegundos,
+            duracaoPausaCurta: $scope.formulario.duracaoPausaCurtaSegundos,
+            duracaoPausaLonga: $scope.formulario.duracaoPausaLongaSegundos,
             ciclosParaPausaLonga: $scope.formulario.ciclosParaPausaLonga,
             cor: $scope.formulario.cor
         };
@@ -78,15 +101,8 @@
     $scope.iniciarEdicao = function(tarefa) {
         $scope.menuAbertoId = null;
         $scope.mensagemDeErro = '';
-        $scope.tarefaEmEdicao = tarefa;
-        $scope.formulario = {
-            nomeDaTarefa: tarefa.nomeDaTarefa,
-            duracaoFocoMinutos: converterSegundosEmMinutos(tarefa.duracaoFocoSegundos),
-            duracaoPausaCurtaMinutos: converterSegundosEmMinutos(tarefa.duracaoPausaCurta),
-            duracaoPausaLongaMinutos: converterSegundosEmMinutos(tarefa.duracaoPausaLonga),
-            ciclosParaPausaLonga: tarefa.ciclosParaPausaLonga,
-            cor: tarefa.cor
-        };
+        preencherFormulario(tarefa);   // mostra já o que veio na lista
+        obterTarefa(tarefa.tarefaId);  // e atualiza com o estado salvo no servidor
         $scope.telaAtual = 'formulario';
     };
 

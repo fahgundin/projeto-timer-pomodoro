@@ -17,6 +17,18 @@ public class TarefaRepository(PomodoroDbContext contexto) : ITarefaRepository
             .ToListAsync();
     }
 
+    public async Task<Tarefa> ObterTarefa(int id)
+    {
+        var tarefa = await contexto.Tarefas
+            .Where(t => t.TarefaId == id)
+            .FirstOrDefaultAsync();
+        
+        if (tarefa == null)
+            throw new KeyNotFoundException("Não foi possivel encontrar a tarefa");
+
+        return tarefa;
+    }
+
     public async Task AtualizarTarefa(TarefaViewModel tarefa)
     {
         if (tarefa.TarefaId == null)
@@ -34,6 +46,7 @@ public class TarefaRepository(PomodoroDbContext contexto) : ITarefaRepository
         tarefaDoBanco.CiclosParaPausaLonga = tarefa.CiclosParaPausaLonga;
         tarefaDoBanco.Arquivado = tarefa.Arquivado;
         tarefaDoBanco.Cor = tarefa.Cor;
+        tarefaDoBanco.Personalizado = tarefa.Personalizado;
 
         await contexto.SaveChangesAsync();
     }

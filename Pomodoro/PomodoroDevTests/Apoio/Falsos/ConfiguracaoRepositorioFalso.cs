@@ -7,9 +7,9 @@ public class ConfiguracaoRepositorioFalso : IConfiguracaoRepository
 {
     public ConfiguracaoViewModel ConfiguracaoADevolver { get; set; } = new()
     {
-        DuracaoFocoMinutos = 50,
-        DuracaoPausaCurtaMinutos = 10,
-        DuracaoPausaLongaMinutos = 20,
+        DuracaoFoco = 50,
+        DuracaoPausaCurta = 10,
+        DuracaoPausaLonga = 20,
         CiclosParaPausaLonga = 4,
         PausaLongaAtivada = true
     };

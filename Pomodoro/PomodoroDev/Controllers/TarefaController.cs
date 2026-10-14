@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text.Json.Nodes;
+using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Entities;
 using WebApplication1.Intefaces.Core;
 using WebApplication1.ViewModels;
@@ -20,6 +21,15 @@ public class TarefaController(ITarefaBusiness tarefaBusiness) : Controller
         return new JsonResult(tarefasViewModel);
     }
 
+    [HttpPost]
+    public async Task<JsonResult> ObterTarefa([FromQuery] int tarefaId)
+    {
+        if (tarefaId == 0)
+            throw new  ArgumentNullException(nameof(tarefaId));
+        var tarefa = await tarefaBusiness.ObterTarefa(tarefaId);
+        return new JsonResult(tarefa);
+    }
+    
     [HttpPost]
     public JsonResult CriarTarefa([FromBody] TarefaViewModel tarefa)
     {

@@ -13,6 +13,12 @@ public class TarefaBusiness(ITarefaRepository tarefaRepository) : ITarefaBusines
         return tarefas;
     }
 
+    public async Task<Tarefa> ObterTarefa(int id)
+    {
+        var tarefa = await tarefaRepository.ObterTarefa(id);
+        return tarefa;
+    }
+
     public async Task AtualizarTarefa(TarefaViewModel tarefa)
     {
         await tarefaRepository.AtualizarTarefa(tarefa);

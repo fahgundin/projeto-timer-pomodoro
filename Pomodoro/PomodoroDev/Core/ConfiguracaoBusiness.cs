@@ -34,20 +34,20 @@ public class ConfiguracaoBusiness(IConfiguracaoRepository configuracaoRepository
     {
         var erros = new List<string>();
 
-        if (configuracao.DuracaoFocoMinutos < focoMinimo || configuracao.DuracaoFocoMinutos > focoMaximo)
-            erros.Add($"Foco deve ser entre {focoMinimo} e {focoMaximo} minutos");
+        if (configuracao.DuracaoFoco < focoMinimo || configuracao.DuracaoFoco > focoMaximo)
+            erros.Add($"Foco deve ser entre {focoMinimo} e {focoMaximo} ");
 
-        if (configuracao.DuracaoPausaCurtaMinutos < pausaCurtaMinima || configuracao.DuracaoPausaCurtaMinutos > pausaCurtaMaxima)
-            erros.Add($"Pausa curta deve ser entre {pausaCurtaMinima} e {pausaCurtaMaxima} minutos");
+        if (configuracao.DuracaoPausaCurta < pausaCurtaMinima || configuracao.DuracaoPausaCurta > pausaCurtaMaxima)
+            erros.Add($"Pausa curta deve ser entre {pausaCurtaMinima} e {pausaCurtaMaxima} ");
 
-        if (configuracao.DuracaoPausaLongaMinutos < pausaLongaMinima || configuracao.DuracaoPausaLongaMinutos > pausaLongaMaxima)
-            erros.Add($"Pausa longa deve ser entre {pausaLongaMinima} e {pausaLongaMaxima} minutos");
+        if (configuracao.DuracaoPausaLonga < pausaLongaMinima || configuracao.DuracaoPausaLonga > pausaLongaMaxima)
+            erros.Add($"Pausa longa deve ser entre {pausaLongaMinima} e {pausaLongaMaxima} ");
 
         if (configuracao.CiclosParaPausaLonga < ciclosMinimo || configuracao.CiclosParaPausaLonga > ciclosMaximo)
             erros.Add($"Ciclos deve ser entre {ciclosMinimo} e {ciclosMaximo}");
 
         if (configuracao.PausaLongaAtivada &&
-            configuracao.DuracaoPausaLongaMinutos <= configuracao.DuracaoPausaCurtaMinutos)
+            configuracao.DuracaoPausaLonga <= configuracao.DuracaoPausaCurta)
             erros.Add("Pausa longa deve ser maior que a pausa curta");
 
         return erros;

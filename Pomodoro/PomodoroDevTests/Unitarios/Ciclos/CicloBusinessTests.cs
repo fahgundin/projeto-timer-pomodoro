@@ -2,6 +2,7 @@ using NUnit.Framework;
 using PomodoroDev.Tests.Apoio.Falsos;
 using WebApplication1.Core;
 using WebApplication1.Entities;
+using WebApplication1.Repositories;
 using WebApplication1.ViewModels.Enums;
 
 namespace PomodoroDev.Tests.Unitarios.Ciclos;
@@ -16,7 +17,7 @@ public class CicloBusinessTests
     public void Preparar()
     {
         _repositorio = new CicloRepositorioFalso();
-        _business = new CicloBusiness(_repositorio);
+        _business = new CicloBusiness(_repositorio, new ConfiguracaoRepositorioFalso());
     }
 
     [Test]

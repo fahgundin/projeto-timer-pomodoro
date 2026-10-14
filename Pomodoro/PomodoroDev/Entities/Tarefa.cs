@@ -25,5 +25,7 @@ public partial class Tarefa
 
     public string Cor { get; set; } = null!;
 
+    public bool Personalizado { get; set; }
+
     public virtual ICollection<Ciclo> Ciclos { get; set; } = new List<Ciclo>();
 }
