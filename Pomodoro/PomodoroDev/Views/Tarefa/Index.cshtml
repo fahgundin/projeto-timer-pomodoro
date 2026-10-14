@@ -71,26 +71,41 @@
                 <input id="campoNome" name="nomeDaTarefa" type="text" class="form-control tarefaCampo" maxlength="100" required
                        placeholder="Ex: Estudar Banco de Dados" ng-model="formulario.nomeDaTarefa">
             </div>
-            <div class="mb-3">
-                <label class="tarefaRotulo" for="campoFoco">Duração do foco (minutos)</label>
-                <input id="campoFoco" name="duracaoFoco" type="number" class="form-control tarefaCampo" min="1" max="180" required
-                       ng-model="formulario.duracaoFocoMinutos">
+
+            <div class="form-check form-switch mb-3">
+                <input id="campoPersonalizado" name="personalizado" type="checkbox"
+                       class="form-check-input" ng-model="formulario.personalizado">
+                <label class="form-check-label tarefaRotulo" for="campoPersonalizado">
+                    Personalizado
+                </label>
+                <div class="subtitulo" ng-show="!formulario.personalizado">
+                    Usando as durações e os ciclos da configuração geral.
+                </div>
             </div>
-            <div class="mb-3">
-                <label class="tarefaRotulo" for="campoPausaCurta">Duração da pausa curta (minutos)</label>
-                <input id="campoPausaCurta" name="duracaoPausaCurta" type="number" class="form-control tarefaCampo" min="1" max="60" required
-                       ng-model="formulario.duracaoPausaCurtaMinutos">
+
+            <div ng-if="formulario.personalizado">
+                <div class="mb-3">
+                    <label class="tarefaRotulo" for="campoFoco">Duração do foco (segundos)</label>
+                    <input id="campoFoco" name="duracaoFoco" type="number" class="form-control tarefaCampo" min="1" max="180" required
+                           ng-model="formulario.duracaoFocoSegundos">
+                </div>
+                <div class="mb-3">
+                    <label class="tarefaRotulo" for="campoPausaCurta">Duração da pausa curta (segundos)</label>
+                    <input id="campoPausaCurta" name="duracaoPausaCurta" type="number" class="form-control tarefaCampo" min="1" max="60" required
+                           ng-model="formulario.duracaoPausaCurtaSegundos">
+                </div>
+                <div class="mb-3">
+                    <label class="tarefaRotulo" for="campoPausaLonga">Duração da pausa longa (segundos)</label>
+                    <input id="campoPausaLonga" name="duracaoPausaLonga" type="number" class="form-control tarefaCampo" min="1" max="120" required
+                           ng-model="formulario.duracaoPausaLongaSegundos">
+                </div>
+                <div class="mb-3">
+                    <label class="tarefaRotulo" for="campoCiclos">Ciclos até a pausa longa</label>
+                    <input id="campoCiclos" name="ciclosParaPausaLonga" type="number" class="form-control tarefaCampo" min="1" max="10" required
+                           ng-model="formulario.ciclosParaPausaLonga">
+                </div>
             </div>
-            <div class="mb-3">
-                <label class="tarefaRotulo" for="campoPausaLonga">Duração da pausa longa (minutos)</label>
-                <input id="campoPausaLonga" name="duracaoPausaLonga" type="number" class="form-control tarefaCampo" min="1" max="120" required
-                       ng-model="formulario.duracaoPausaLongaMinutos">
-            </div>
-            <div class="mb-3">
-                <label class="tarefaRotulo" for="campoCiclos">Ciclos até a pausa longa</label>
-                <input id="campoCiclos" name="ciclosParaPausaLonga" type="number" class="form-control tarefaCampo" min="1" max="10" required
-                       ng-model="formulario.ciclosParaPausaLonga">
-            </div>
+
             <div class="mb-3">
                 <label class="tarefaRotulo">Cor de destaque</label>
                 <div class="d-flex tarefaOpcoesCor">

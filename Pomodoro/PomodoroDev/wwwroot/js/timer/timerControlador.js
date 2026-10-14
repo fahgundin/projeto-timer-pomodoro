@@ -26,6 +26,9 @@ angular.module('appTimer').controller('ControladorTimer', function($scope, $http
     $scope.tempoFormatado = '00:00';
     $scope.estadoCronometro = 'Pausado';
     $scope.deslocamentoMinimoCirculo = deslocamentoMinimoCirculo;
+    
+    $scope.tarefasCarregadas = false;
+    $scope.carregandoTarefas = true;
 
     let cronometroInterno = null;
     let fimPrevistoMs = 0;
@@ -205,6 +208,9 @@ angular.module('appTimer').controller('ControladorTimer', function($scope, $http
             $scope.tarefasCarregadas = true;
         }, function() {
             mostrarErro('Não foi possível carregar as tarefas');
+        }).finally(function() {
+            $scope.carregandoTarefas = false;
+            $scope.tarefasCarregadas = true;
         });
     }
 

@@ -1,0 +1,62 @@
+@{
+    ViewData["Title"] = "Configuracao";
+}
+<div id="paginaConfiguracao" ng-app="appConfiguracao" ng-controller="ControladorConfiguracao">
+
+    <div class="cabecalhoPagina d-flex justify-content-between align-items-center px-4 py-3">
+        <h1 class="tituloPagina mb-0">Configurações</h1>
+    </div>
+
+    <div class="tarefaMensagemErro px-4 pt-2" ng-show="mensagemDeErro">{{ mensagemDeErro }}</div>
+    <div class="subtitulo px-4 pt-2" ng-show="mensagemDeSucesso">{{ mensagemDeSucesso }}</div>
+
+    <div class="px-4 py-3" ng-show="carregando">
+        <span class="subtitulo">Carregando...</span>
+    </div>
+
+    <div class="px-4 py-3" ng-show="!carregando">
+        <p class="subtitulo mb-3">
+            Esses valores são usados por todas as tarefas que não estão marcadas como personalizadas.
+        </p>
+
+        <form name="formularioDaConfiguracao" class="tarefaFormulario" novalidate ng-submit="salvarConfiguracao(formularioDaConfiguracao)">
+            <div class="mb-3">
+                <label class="tarefaRotulo" for="campoFoco">Duração do foco (segundos)</label>
+                <input id="campoFoco" name="duracaoFoco" type="number" class="form-control tarefaCampo" min="1" max="180" required
+                       ng-model="formulario.duracaoFoco">
+            </div>
+            <div class="mb-3">
+                <label class="tarefaRotulo" for="campoPausaCurta">Duração da pausa curta (segundos)</label>
+                <input id="campoPausaCurta" name="duracaoPausaCurta" type="number" class="form-control tarefaCampo" min="1" max="60" required
+                       ng-model="formulario.duracaoPausaCurta">
+            </div>
+            <div class="mb-3">
+                <label class="tarefaRotulo" for="campoPausaLonga">Duração da pausa longa (segundos)</label>
+                <input id="campoPausaLonga" name="duracaoPausaLonga" type="number" class="form-control tarefaCampo" min="1" max="120" required
+                       ng-model="formulario.duracaoPausaLonga">
+            </div>
+            <div class="mb-3">
+                <label class="tarefaRotulo" for="campoCiclos">Ciclos até a pausa longa</label>
+                <input id="campoCiclos" name="ciclosParaPausaLonga" type="number" class="form-control tarefaCampo" min="1" max="10" required
+                       ng-model="formulario.ciclosParaPausaLonga">
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="botaoPrimario botaoExpandido"
+                        ng-disabled="formularioDaConfiguracao.$invalid || salvando || !houveAlteracao()">Salvar</button>
+                <button type="button" class="botaoSecundario botaoExpandido"
+                        ng-click="desfazerAlteracoes()" ng-disabled="!houveAlteracao()">Desfazer</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+@section Estilos {
+    <link href="~/css/tarefa/tarefa.css" rel="stylesheet" />
+}
+
+@section Scripts {
+    <script src="~/js/configuracao/configuracaoModulo.js"></script>
+    <script src="~/js/configuracao/configuracaoControlador.js"></script>
+}

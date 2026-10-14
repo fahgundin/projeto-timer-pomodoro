@@ -6,8 +6,15 @@ using WebApplication1.ViewModels.Enums;
 
 namespace WebApplication1.Core;
 
-public class CicloBusiness(ICicloRepository cicloRepository) : ICicloBusiness
+public class CicloBusiness(
+    ICicloRepository cicloRepository,
+    IConfiguracaoRepository configuracaoRepository) : ICicloBusiness
 {
+    private Task<ConfiguracaoViewModel>? _configuracaoTask;
+    private Task<ConfiguracaoViewModel> ObterConfiguracaoAsync()
+        => _configuracaoTask ??= configuracaoRepository.ObterConfiguracao();
+
+    
     private async Task<Ciclo> IniciarCiclo(int tarefaId, TiposDeCiclo tipoDoCiclo)
     {
         var novoCiclo = new Ciclo
@@ -23,22 +30,27 @@ public class CicloBusiness(ICicloRepository cicloRepository) : ICicloBusiness
 
     private async Task<Ciclo> Pausar(Ciclo cicloASerPausado)
     {
-        await FinalizarCiclo(cicloASerPausado);
-
-        var focosConcluidosDesdeAUltimaPausaLonga =
+        var focosConcluidosDesdeAUltimaPausaLonga = 
             await cicloRepository.ConsultarQuantidadeDeFocosConcluidosDesdeAUltimaPausaLonga(cicloASerPausado.TarefaId);
 
-        var tipoDaPausa = focosConcluidosDesdeAUltimaPausaLonga >= cicloASerPausado.Tarefa.CiclosParaPausaLonga
+        var tipoDaPausa = focosConcluidosDesdeAUltimaPausaLonga >= await CiclosParaPausaLonga(cicloASerPausado)
             ? TiposDeCiclo.PausaLonga
             : TiposDeCiclo.PausaCurta;
 
         return await IniciarCiclo(cicloASerPausado.TarefaId, tipoDaPausa);
     }
 
+    private async Task<int> CiclosParaPausaLonga(Ciclo cicloASerPausado)
+    {
+        ConfiguracaoViewModel configuracao = await configuracaoRepository.ObterConfiguracao();
+        
+        return cicloASerPausado.Tarefa.Personalizado ?
+            cicloASerPausado.Tarefa.CiclosParaPausaLonga :
+            configuracao.CiclosParaPausaLonga;
+    }
+
     private async Task<Ciclo> Focar(Ciclo cicloASerFocado)
     {
-        await FinalizarCiclo(cicloASerFocado);
-
         return await IniciarCiclo(cicloASerFocado.TarefaId, TiposDeCiclo.Focus);
     }
 
@@ -50,6 +62,8 @@ public class CicloBusiness(ICicloRepository cicloRepository) : ICicloBusiness
     public async Task<Ciclo> MudarDeCiclo()
     {
         var cicloAtual = await ObterCicloAtual();
+
+        var configuracao = await this.ObterConfiguracaoAsync();
 
         if (cicloAtual == null)
             throw new KeyNotFoundException("Não existem ciclos abertos");

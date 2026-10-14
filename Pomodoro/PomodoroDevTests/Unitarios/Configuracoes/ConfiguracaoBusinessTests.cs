@@ -26,7 +26,7 @@ public class ConfiguracaoBusinessTests
 
         // Assert
         Assert.That(resultado, Is.Not.Null);
-        Assert.That(resultado.DuracaoFocoMinutos, Is.GreaterThan(0));
+        Assert.That(resultado.DuracaoFoco, Is.GreaterThan(0));
     }
 
     [Test]
@@ -35,9 +35,9 @@ public class ConfiguracaoBusinessTests
         // Arrange
         var configuracao = new ConfiguracaoViewModel
         {
-            DuracaoFocoMinutos = 50,
-            DuracaoPausaCurtaMinutos = 10,
-            DuracaoPausaLongaMinutos = 20,
+            DuracaoFoco = 50,
+            DuracaoPausaCurta = 10,
+            DuracaoPausaLonga = 20,
             CiclosParaPausaLonga = 4,
             PausaLongaAtivada = true
         };
@@ -55,9 +55,9 @@ public class ConfiguracaoBusinessTests
         // Arrange
         var configuracao = new ConfiguracaoViewModel
         {
-            DuracaoFocoMinutos = focoInvalido,
-            DuracaoPausaCurtaMinutos = 10,
-            DuracaoPausaLongaMinutos = 20,
+            DuracaoFoco = focoInvalido,
+            DuracaoPausaCurta = 10,
+            DuracaoPausaLonga = 20,
             CiclosParaPausaLonga = 4,
             PausaLongaAtivada = true
         };
@@ -75,9 +75,9 @@ public class ConfiguracaoBusinessTests
         // Arrange
         var configuracao = new ConfiguracaoViewModel
         {
-            DuracaoFocoMinutos = 50,
-            DuracaoPausaCurtaMinutos = pausaCurtaInvalida,
-            DuracaoPausaLongaMinutos = 20,
+            DuracaoFoco = 50,
+            DuracaoPausaCurta = pausaCurtaInvalida,
+            DuracaoPausaLonga = 20,
             CiclosParaPausaLonga = 4,
             PausaLongaAtivada = true
         };
@@ -95,9 +95,9 @@ public class ConfiguracaoBusinessTests
         // Arrange
         var configuracao = new ConfiguracaoViewModel
         {
-            DuracaoFocoMinutos = 50,
-            DuracaoPausaCurtaMinutos = 10,
-            DuracaoPausaLongaMinutos = pausaLongaInvalida,
+            DuracaoFoco = 50,
+            DuracaoPausaCurta = 10,
+            DuracaoPausaLonga = pausaLongaInvalida,
             CiclosParaPausaLonga = 4,
             PausaLongaAtivada = true
         };
@@ -115,9 +115,9 @@ public class ConfiguracaoBusinessTests
         // Arrange
         var configuracao = new ConfiguracaoViewModel
         {
-            DuracaoFocoMinutos = 50,
-            DuracaoPausaCurtaMinutos = 10,
-            DuracaoPausaLongaMinutos = 20,
+            DuracaoFoco = 50,
+            DuracaoPausaCurta = 10,
+            DuracaoPausaLonga = 20,
             CiclosParaPausaLonga = ciclosInvalidos,
             PausaLongaAtivada = true
         };
@@ -133,9 +133,9 @@ public class ConfiguracaoBusinessTests
         // Arrange
         var configuracao = new ConfiguracaoViewModel
         {
-            DuracaoFocoMinutos = 50,
-            DuracaoPausaCurtaMinutos = 20,
-            DuracaoPausaLongaMinutos = 10,
+            DuracaoFoco = 50,
+            DuracaoPausaCurta = 20,
+            DuracaoPausaLonga = 10,
             CiclosParaPausaLonga = 4,
             PausaLongaAtivada = true
         };
@@ -151,9 +151,9 @@ public class ConfiguracaoBusinessTests
         // Arrange
         var configuracao = new ConfiguracaoViewModel
         {
-            DuracaoFocoMinutos = 50,
-            DuracaoPausaCurtaMinutos = 15,
-            DuracaoPausaLongaMinutos = 15,
+            DuracaoFoco = 50,
+            DuracaoPausaCurta = 15,
+            DuracaoPausaLonga = 15,
             CiclosParaPausaLonga = 4,
             PausaLongaAtivada = true
         };
@@ -169,9 +169,9 @@ public class ConfiguracaoBusinessTests
         // Arrange
         var configuracao = new ConfiguracaoViewModel
         {
-            DuracaoFocoMinutos = 50,
-            DuracaoPausaCurtaMinutos = 20,
-            DuracaoPausaLongaMinutos = 10,
+            DuracaoFoco = 50,
+            DuracaoPausaCurta = 20,
+            DuracaoPausaLonga = 10,
             CiclosParaPausaLonga = 4,
             PausaLongaAtivada = false
         };
@@ -187,9 +187,9 @@ public class ConfiguracaoBusinessTests
         // Arrange
         var configuracao = new ConfiguracaoViewModel
         {
-            DuracaoFocoMinutos = 50,
-            DuracaoPausaCurtaMinutos = 10,
-            DuracaoPausaLongaMinutos = 20,
+            DuracaoFoco = 50,
+            DuracaoPausaCurta = 10,
+            DuracaoPausaLonga = 20,
             CiclosParaPausaLonga = 4,
             PausaLongaAtivada = true
         };
@@ -199,7 +199,7 @@ public class ConfiguracaoBusinessTests
 
         // Assert
         Assert.That(_repositorio.ConfiguracaoSalva, Is.Not.Null);
-        Assert.That(_repositorio.ConfiguracaoSalva!.DuracaoFocoMinutos, Is.EqualTo(50));
+        Assert.That(_repositorio.ConfiguracaoSalva!.DuracaoFoco, Is.EqualTo(50));
         Assert.That(_repositorio.ConfiguracaoSalva.PausaLongaAtivada, Is.True);
     }
 }

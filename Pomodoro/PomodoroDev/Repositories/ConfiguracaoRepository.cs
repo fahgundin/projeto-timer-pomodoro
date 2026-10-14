@@ -9,13 +9,12 @@ namespace WebApplication1.Repositories;
 public class ConfiguracaoRepository(PomodoroDbContext contexto) : IConfiguracaoRepository
 {
     private const int idDaConfiguracao = 1;
-    private const int minutosParaSegundos = 60;
 
     private static readonly ConfiguracaoViewModel ConfiguracaoPadrao = new()
     {
-        DuracaoFocoMinutos = 50,
-        DuracaoPausaCurtaMinutos = 10,
-        DuracaoPausaLongaMinutos = 20,
+        DuracaoFoco = 500,
+        DuracaoPausaCurta = 100,
+        DuracaoPausaLonga = 200,
         CiclosParaPausaLonga = 4,
         PausaLongaAtivada = true
     };
@@ -31,9 +30,9 @@ public class ConfiguracaoRepository(PomodoroDbContext contexto) : IConfiguracaoR
 
         return new ConfiguracaoViewModel
         {
-            DuracaoFocoMinutos = configuracao.DuracaoFocoSegundos / minutosParaSegundos,
-            DuracaoPausaCurtaMinutos = configuracao.DuracaoPausaCurta / minutosParaSegundos,
-            DuracaoPausaLongaMinutos = configuracao.DuracaoPausaLonga / minutosParaSegundos,
+            DuracaoFoco = configuracao.DuracaoFocoSegundos,
+            DuracaoPausaCurta = configuracao.DuracaoPausaCurta ,
+            DuracaoPausaLonga = configuracao.DuracaoPausaLonga,
             CiclosParaPausaLonga = configuracao.CiclosParaPausaLonga,
             PausaLongaAtivada = configuracao.PausaLongaAtivada
         };
@@ -46,21 +45,21 @@ public class ConfiguracaoRepository(PomodoroDbContext contexto) : IConfiguracaoR
 
         if (existente == null)
         {
-            contexto.Configuracoes.Add(new Configuracao
+            contexto.Configuracoes.Add(new Configuraco
             {
                 ConfiguracaoId = idDaConfiguracao,
-                DuracaoFocoSegundos = configuracao.DuracaoFocoMinutos * minutosParaSegundos,
-                DuracaoPausaCurta = configuracao.DuracaoPausaCurtaMinutos * minutosParaSegundos,
-                DuracaoPausaLonga = configuracao.DuracaoPausaLongaMinutos * minutosParaSegundos,
+                DuracaoFocoSegundos = configuracao.DuracaoFoco,
+                DuracaoPausaCurta = configuracao.DuracaoPausaCurta,
+                DuracaoPausaLonga = configuracao.DuracaoPausaLonga,
                 CiclosParaPausaLonga = configuracao.CiclosParaPausaLonga,
                 PausaLongaAtivada = configuracao.PausaLongaAtivada
             });
         }
         else
         {
-            existente.DuracaoFocoSegundos = configuracao.DuracaoFocoMinutos * minutosParaSegundos;
-            existente.DuracaoPausaCurta = configuracao.DuracaoPausaCurtaMinutos * minutosParaSegundos;
-            existente.DuracaoPausaLonga = configuracao.DuracaoPausaLongaMinutos * minutosParaSegundos;
+            existente.DuracaoFocoSegundos = configuracao.DuracaoFoco;
+            existente.DuracaoPausaCurta = configuracao.DuracaoPausaCurta;
+            existente.DuracaoPausaLonga = configuracao.DuracaoPausaLonga;
             existente.CiclosParaPausaLonga = configuracao.CiclosParaPausaLonga;
             existente.PausaLongaAtivada = configuracao.PausaLongaAtivada;
         }

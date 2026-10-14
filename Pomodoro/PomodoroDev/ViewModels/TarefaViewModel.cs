@@ -21,4 +21,6 @@ public class TarefaViewModel
     public bool Arquivado { get; set; }
 
     public string Cor { get; set; } = "#4b5563";
+    
+    public bool Personalizado { get; set; }
 }

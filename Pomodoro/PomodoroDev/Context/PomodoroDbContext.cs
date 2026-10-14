@@ -14,11 +14,11 @@ public partial class PomodoroDbContext : DbContext
 
     public virtual DbSet<Ciclo> Ciclos { get; set; }
 
+    public virtual DbSet<Configuraco> Configuracoes { get; set; }
+
     public virtual DbSet<HistoricoMigraco> HistoricoMigracoes { get; set; }
 
     public virtual DbSet<Tarefa> Tarefas { get; set; }
-    
-    public virtual DbSet<Configuracao> Configuracoes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -28,6 +28,14 @@ public partial class PomodoroDbContext : DbContext
                 .HasForeignKey(d => d.TarefaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Tarefa");
+        });
+
+        modelBuilder.Entity<Configuraco>(entity =>
+        {
+            entity.HasKey(e => e.ConfiguracaoId);
+
+            entity.Property(e => e.ConfiguracaoId).ValueGeneratedNever();
+            entity.Property(e => e.PausaLongaAtivada).HasDefaultValue(true, "DF_Configuracoes_PausaLonga");
         });
 
         modelBuilder.Entity<HistoricoMigraco>(entity =>

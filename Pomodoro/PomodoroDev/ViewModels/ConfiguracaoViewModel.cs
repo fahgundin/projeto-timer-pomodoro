@@ -2,11 +2,11 @@
 
 public class ConfiguracaoViewModel
 {
-    public int DuracaoFocoMinutos { get; set; }
+    public int DuracaoFoco { get; set; }
 
-    public int DuracaoPausaCurtaMinutos { get; set; }
+    public int DuracaoPausaCurta { get; set; }
 
-    public int DuracaoPausaLongaMinutos { get; set; }
+    public int DuracaoPausaLonga { get; set; }
 
     public int CiclosParaPausaLonga { get; set; }
 

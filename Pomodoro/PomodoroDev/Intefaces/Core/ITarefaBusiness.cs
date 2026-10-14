@@ -6,6 +6,7 @@ namespace WebApplication1.Intefaces.Core;
 public interface ITarefaBusiness
 {
     Task<List<Tarefa>> ObterTarefas();
+    Task<Tarefa> ObterTarefa(int id);
 
     Task AtualizarTarefa(TarefaViewModel tarefa);
 

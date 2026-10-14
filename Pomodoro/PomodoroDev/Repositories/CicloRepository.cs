@@ -2,13 +2,18 @@
 using WebApplication1.Context;
 using WebApplication1.Entities;
 using WebApplication1.Intefaces.Repositorios;
+using WebApplication1.ViewModels;
 
 namespace WebApplication1.Repositories;
 
-public class CicloRepository(PomodoroDbContext contexto) : ICicloRepository
+public class CicloRepository(PomodoroDbContext contexto, IConfiguracaoRepository configuracaoRepository) : ICicloRepository
 {
     private const int tipoFoco = 0;
     private const int tipoPausaLonga = 1;
+    
+    private Task<ConfiguracaoViewModel>? _configuracaoTask;
+    private Task<ConfiguracaoViewModel> ObterConfiguracaoAsync()
+        => _configuracaoTask ??= configuracaoRepository.ObterConfiguracao();
 
     public async Task<List<Ciclo>> ObterCiclosConcluidosDeUmaTarefa(int tarefaId)
     {
@@ -67,15 +72,29 @@ public class CicloRepository(PomodoroDbContext contexto) : ICicloRepository
             .AsNoTracking()
             .FirstAsync(t => t.TarefaId == ciclo.TarefaId);
 
-        ciclo.DuracaoPlanejadaSegundos = ciclo.TipoDoCiclo switch
-        {
-            tipoFoco => tarefa.DuracaoFocoSegundos,
-            tipoPausaLonga => tarefa.DuracaoPausaLonga,
-            _ => tarefa.DuracaoPausaCurta
-        };
+        ciclo.DuracaoPlanejadaSegundos = await DuracaoPlanejadaSegundos(ciclo, tarefa);
 
         await contexto.Ciclos.AddAsync(ciclo);
         await contexto.SaveChangesAsync();
+    }
+
+    private async Task<int> DuracaoPlanejadaSegundos(Ciclo ciclo, Tarefa tarefa)
+    {
+        var configuracao = await ObterConfiguracaoAsync();
+        return tarefa.Personalizado
+            ? ciclo.TipoDoCiclo switch
+            {
+                tipoFoco => tarefa.DuracaoFocoSegundos,
+                tipoPausaLonga => tarefa.DuracaoPausaLonga,
+                _ => tarefa.DuracaoPausaCurta
+            }
+            : ciclo.TipoDoCiclo switch
+            {
+                tipoFoco => configuracao.DuracaoFoco,
+                tipoPausaLonga => configuracao.DuracaoPausaLonga,
+                _ => configuracao.DuracaoPausaCurta
+            };
+    
     }
 
     public async Task<Ciclo> FinalizarCiclo(Ciclo ciclo)
